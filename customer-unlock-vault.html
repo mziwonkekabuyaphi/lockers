@@ -26,7 +26,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 15px;
             flex-wrap: wrap;
         }
@@ -35,15 +35,23 @@
             align-items: center;
         }
         .logo img {
-            max-height: 100px;
+            max-height: 150px;
             width: auto;
             border-radius: 50%;
             object-fit: cover;
+        }
+        .header-title {
+            flex: 1;
+            text-align: center;
         }
         .header-title h1 {
             font-size: 26px;
             font-weight: 600;
             margin: 0;
+        }
+        .spacer {
+            width: 150px;
+            visibility: hidden;
         }
         main {
             flex: 1;
@@ -217,12 +225,17 @@
             color: #b71c1c;
             font-weight: 600;
         }
+        @media (max-width: 768px) {
+            .logo img { max-height: 120px; }
+            .spacer { width: 120px; }
+            .header-title h1 { font-size: 22px; }
+        }
         @media (max-width: 480px) {
             .key { padding: 14px; font-size: 20px; }
             .pin-input { font-size: 24px; letter-spacing: 8px; }
-            .logo img { max-height: 80px; }
-            header { gap: 8px; }
-            .header-title h1 { font-size: 22px; }
+            .logo img { max-height: 120px; }
+            .spacer { width: 120px; }
+            .header-title h1 { font-size: 18px; }
         }
     </style>
 </head>
@@ -234,6 +247,7 @@
     <div class="header-title">
         <h1>Collect Your Items</h1>
     </div>
+    <div class="spacer"></div>
 </header>
 <main>
     <div class="section">
