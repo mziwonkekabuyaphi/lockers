@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Rands Locker · Pre‑register Your Items</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #1e1e1e;
+            padding-bottom: 24px;
+        }
+
+        header {
+            background: #c62828;
+            color: white;
+            padding: 18px 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-title h1 {
+            font-size: 26px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-title p {
+            font-size: 15px;
+            opacity: 0.95;
+            margin-top: 6px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 16px auto;
+            padding: 0 16px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #b71c1c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input, button {
+            border-radius: 60px !important;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 14px 18px;
+            background: #fafafa;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #b71c1c;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(215, 45, 45, 0.2);
+        }
+
+        button {
+            background: #b71c1c;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.15s;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #8e1414;
+            transform: scale(0.98);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .product-card {
+            background: #fafafa;
+            border-radius: 24px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #eee;
+            transition: 0.2s;
+        }
+
+        .product-card:hover {
+            border-color: #b71c1c;
+            background: #fff;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .add-product-btn {
+            background: #4caf50;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .add-product-btn:hover {
+            background: #45a049;
+            transform: scale(0.98);
+        }
+
+        .selected-items {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .selected-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            background: white;
+            margin-bottom: 5px;
+            border-radius: 40px;
+        }
+
+        .selected-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-weight: 600;
+            flex: 2;
+        }
+
+        .item-qty-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex: 1;
+        }
+
+        .qty-btn {
+            background: #b71c1c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: #8e1414;
+            transform: none;
+        }
+
+        .qty-display {
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-item {
+            color: #b71c1c;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 40px;
+            margin-left: 10px;
+            background: #ffe0e0;
+        }
+
+        .remove-item:hover {
+            background: #ffcdd2;
+        }
+
+        .info-box {
+            background: #b71c1c;
+            color: white;
+            padding: 18px;
+            border-radius: 28px;
+            margin-bottom: 20px;
+        }
+
+        .security-badge {
+            background: #ff9800;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .pin-display {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 24px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 6px solid #4caf50;
+        }
+
+        .pin-number {
+            font-size: 42px;
+            font-weight: bold;
+            color: #b71c1c;
+            letter-spacing: 8px;
+            font-family: monospace;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 60px;
+            display: inline-block;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .small-note {
+            font-size: 13px;
+            color: #2c3e50;
+            background: #fff3cd;
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer span {
+            color: #b71c1c;
+            font-weight: 600;
+        }
+
+        .staff-link {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 12px 20px;
+            border-radius: 60px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .staff-link a {
+            color: #b71c1c;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .staff-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 90%;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 6px solid #b71c1c;
+        }
+        .modal-content h3 {
+            color: #b71c1c;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+        .modal-content p {
+            margin: 16px 0;
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        .modal-content button {
+            background: #b71c1c;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+        .modal-content button:hover {
+            background: #8e1414;
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .pin-number {
+                font-size: 28px;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-title">
+        <h1>📱 Rands Locker · Pre‑register</h1>
+        <p>Secure your items now – receive a PIN for later collection</p>
+    </div>
+</header>
+
+<main>
+    <div class="info-box">
+        <span class="security-badge">🔐 TWO‑FACTOR READY</span>
+        <strong>Pre‑register your items</strong> – we'll give you a 5‑digit PIN. When you arrive at the counter, present your WhatsApp number and this PIN to complete locker assignment.
+    </div>
+
+    <!-- Item selection section -->
+    <div class="section">
+        <h2>🛒 1. Select your items</h2>
+
+        <!-- Product grid -->
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be populated by JS -->
+        </div>
+
+        <!-- Basket -->
+        <div class="selected-items" id="selectedItemsContainer">
+            <h4>📦 Your basket (adjust quantities):</h4>
+            <div id="selectedItemsList">
+                <p style="color: #999; text-align: center;">No items selected yet</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer details -->
+    <div class="section">
+        <h2>📋 2. Your details</h2>
+        <label for="preName">Full name</label>
+        <input type="text" id="preName" placeholder="e.g., Mziwonke KaBuyaphi" value="Mziwonke KaBuyaphi">
+
+        <label for="prePhone">WhatsApp number (required for collection)</label>
+        <input type="tel" id="prePhone" placeholder="+27 82 123 4567" value="+27 82 123 4567">
+        <p style="font-size: 12px; color: #666; margin-top: -8px;">You will need this number together with your PIN to finalise locker assignment.</p>
+
+        <button onclick="generatePreRegister()" style="width: 100%; margin-top: 15px; background: #4caf50;">
+            🔑 Generate PIN & Pre‑register
+        </button>
+    </div>
+
+    <!-- PIN display (hidden until generated) -->
+    <div id="preRegisterDisplay" class="pin-display hidden">
+        <p>✅ Pre‑registration successful!</p>
+        <p>Your 5‑digit PIN:</p>
+        <div class="pin-number" id="generatedPIN">12345</div>
+        <p><strong>Items:</strong> <span id="preRegisteredItems"></span></p>
+        <div style="background: #fff3cd; border-radius: 40px; padding: 12px; margin-top: 15px;">
+            ⚠️ <strong>Keep this PIN safe!</strong> You will need to show it together with your WhatsApp number at the counter.
+        </div>
+    </div>
+
+    <div class="staff-link">
+        👥 <strong>Staff:</strong> <a onclick="openStaffDashboard()">Open Rands Vault Dashboard</a> to view all pre‑registrations and assign lockers.
+    </div>
+
+    <div class="small-note">
+        💡 <strong>How it works:</strong> After pre‑registering, bring your PIN and WhatsApp number to the counter. Staff will verify and assign you a physical locker. Your items will be stored securely until collection.
+    </div>
+</main>
+
+<div class="footer">
+    Created by <span>Mziwonke KaBuyaphi</span> | 🔐 Two‑Factor Security Ready
+</div>
+
+<!-- Modal structure -->
+<div id="customModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Notice</h3>
+        <p id="modalMessage">Message goes here</p>
+        <button onclick="closeModal()">OK</button>
+    </div>
+</div>
+
+<script>
+    // ----- Product List -----
+    const products = [
+        "Heineken Beer 6-pack",
+        "Castle Lager 6-pack",
+        "Black Label 6-pack",
+        "Jameson Whiskey 750ml",
+        "Jack Daniels 750ml",
+        "Johnnie Walker Black 12yr",
+        "Smirnoff Vodka 1L",
+        "Absolut Vodka 1L",
+        "Gordon's Gin 1L",
+        "Bombay Sapphire 1L",
+        "Captain Morgan Rum 1L",
+        "Bacardi Rum 1L",
+        "Amarula Cream 750ml",
+        "Jägermeister 700ml",
+        "Savanna Dry 6-pack",
+        "Hunters Dry 6-pack",
+        "Red Wine (Robertson)",
+        "White Wine (Robertson)",
+        "Champagne (Moet)",
+        "Prosecco"
+    ];
+
+    let selectedItems = []; // { name: string, quantity: number }
+
+    // ----- Render product grid -----
+    function renderProductGrid() {
+        const grid = document.getElementById('productGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-name">${escapeHtml(product)}</div>
+                <button class="add-product-btn" onclick="addProduct('${escapeHtml(product)}')">➕ Add</button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function addProduct(productName) {
+        const existing = selectedItems.find(i => i.name === productName);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            selectedItems.push({ name: productName, quantity: 1 });
+        }
+        updateSelectedItemsDisplay();
+    }
+
+    function increaseQuantity(index) {
+        selectedItems[index].quantity += 1;
+        updateSelectedItemsDisplay();
+    }
+
+    function decreaseQuantity(index) {
+        if (selectedItems[index].quantity > 1) {
+            selectedItems[index].quantity -= 1;
+        } else {
+            selectedItems.splice(index, 1);
+        }
+        updateSelectedItemsDisplay();
+    }
+
+    function removeSelectedItem(index) {
+        selectedItems.splice(index, 1);
+        updateSelectedItemsDisplay();
+    }
+
+    function updateSelectedItemsDisplay() {
+        const container = document.getElementById('selectedItemsList');
+        if (!container) return;
+        if (selectedItems.length === 0) {
+            container.innerHTML = '<p style="color: #999; text-align: center;">No items selected yet</p>';
+            return;
+        }
+
+        let html = '';
+        selectedItems.forEach((item, idx) => {
+            html += `
+                <div class="selected-item-row">
+                    <span class="item-name">${escapeHtml(item.name)}</span>
+                    <div class="item-qty-controls">
+                        <button class="qty-btn" onclick="decreaseQuantity(${idx})">−</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button class="qty-btn" onclick="increaseQuantity(${idx})">+</button>
+                    </div>
+                    <span class="remove-item" onclick="removeSelectedItem(${idx})">✖ Remove</span>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // ----- Modal functions -----
+    function showModal(title, message) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMessage').innerHTML = message;
+        document.getElementById('customModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('customModal').style.display = 'none';
+    }
+
+    window.showModal = showModal;
+    window.closeModal = closeModal;
+
+    // ----- Pre-registration Logic -----
+    function generateRandomPIN() {
+        return Math.floor(10000 + Math.random() * 90000).toString();
+    }
+
+    function generatePreRegister() {
+        const name = document.getElementById('preName').value.trim();
+        const phone = document.getElementById('prePhone').value.trim();
+
+        if (!name) {
+            showModal('Missing name', 'Please enter your name.');
+            return;
+        }
+        if (!phone) {
+            showModal('Missing phone', 'Please enter your WhatsApp number.');
+            return;
+        }
+        if (!phone.match(/^[\+]?[0-9\s\-\(\)]{10,}$/)) {
+            showModal('Invalid phone', 'Please enter a valid phone number (including country code).');
+            return;
+        }
+        if (selectedItems.length === 0) {
+            showModal('No items', 'Please select at least one item to store.');
+            return;
+        }
+
+        // Format items string
+        const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', ');
+        const pin = generateRandomPIN();
+
+        // Create pre-registration record
+        const preReg = {
+            id: Date.now(),
+            name: name,
+            phone: phone,
+            items: itemsString,
+            pin: pin,
+            status: "Pre-registered",
+            timestamp: new Date().toISOString()
+        };
+
+        // Store in localStorage
+        const existing = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
+        existing.push(preReg);
+        localStorage.setItem('randsPreRegistered', JSON.stringify(existing));
+
+        // Display PIN to user
+        document.getElementById('generatedPIN').textContent = pin;
+        document.getElementById('preRegisteredItems').textContent = itemsString;
+        document.getElementById('preRegisterDisplay').classList.remove('hidden');
+
+        showModal('Pre-registration complete', `✅ Pre-registration successful!\n\nYour PIN: ${pin}\n\nPlease present this PIN and your WhatsApp number at the counter.`);
+
+        // Reset form for next use
+        selectedItems = [];
+        updateSelectedItemsDisplay();
+        document.getElementById('preName').value = '';
+        document.getElementById('prePhone').value = '';
+    }
+
+    function openStaffDashboard() {
+        window.open('Rands-Vault.html', '_blank', 'width=1400,height=800');
+    }
+
+    // Helper to escape HTML
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Make functions globally accessible
+    window.addProduct = addProduct;
+    window.increaseQuantity = increaseQuantity;
+    window.decreaseQuantity = decreaseQuantity;
+    window.removeSelectedItem = removeSelectedItem;
+    window.generatePreRegister = generatePreRegister;
+    window.openStaffDashboard = openStaffDashboard;
+
+    // Initialise
+    renderProductGrid();
+    updateSelectedItemsDisplay();
+</script>
+</body>
+</html>
