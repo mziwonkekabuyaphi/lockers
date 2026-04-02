@@ -24,6 +24,20 @@
             padding: 18px 16px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            max-height: 60px;
+            width: auto;
+            filter: brightness(0) invert(1);
         }
         .header-title h1 {
             font-size: 26px;
@@ -124,7 +138,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .back-home {
+        .back-wallet {
             background: #666;
             color: white;
         }
@@ -210,13 +224,19 @@
         @media (max-width: 480px) {
             .key { padding: 14px; font-size: 20px; }
             .pin-input { font-size: 24px; letter-spacing: 8px; }
+            .logo img { max-height: 50px; }
+            header { gap: 8px; }
+            .header-title h1 { font-size: 22px; }
         }
     </style>
 </head>
 <body>
 <header>
+    <div class="logo">
+        <img src="images/rands-logo.png" alt="Rands Logo" onerror="this.style.display='none'">
+    </div>
     <div class="header-title">
-        <h1>🔓 Collect Your Items</h1>
+        <h1>Collect Your Items</h1>
         <p>Enter your WhatsApp number and 4-digit PIN</p>
     </div>
 </header>
@@ -245,8 +265,8 @@
         </div>
 
         <div class="action-buttons">
-            <button class="back-home" onclick="goHome()">🏠 Home</button>
-            <button class="submit-btn" onclick="submitPIN()">🔓 Request Unlock</button>
+            <button class="back-wallet" onclick="goToWallet()">🔙 Back to Wallet</button>
+            <button class="submit-btn" onclick="submitPIN()">🔓 Unlock</button>
         </div>
 
         <div id="resultArea" class="result-area"></div>
@@ -290,9 +310,9 @@
 
     function closeModal() {
         document.getElementById('customModal').style.display = 'none';
-        // If the modal was showing success after unlock, redirect to home after closing
+        // If the modal was showing success after unlock, redirect to wallet after closing
         if (window.location.href.includes('success')) {
-            goHome();
+            goToWallet();
         }
     }
 
@@ -393,7 +413,7 @@
                         <div class="customer-found">
                             <h3 style="color: #4caf50;">✅ Locker Unlocked!</h3>
                             <p>Your locker has been unlocked. Please collect your items.</p>
-                            <button onclick="goHome()" style="background:#b71c1c; color:white; border:none; padding:10px 20px; border-radius:40px; margin-top:10px;">🏠 Back to Home</button>
+                            <button onclick="goToWallet()" style="background:#b71c1c; color:white; border:none; padding:10px 20px; border-radius:40px; margin-top:10px;">🔙 Back to Wallet</button>
                         </div>
                     `;
                     showModal('Success', 'Your locker has been unlocked. Thank you!');
@@ -411,15 +431,15 @@
         }
     }
 
-    function goHome() {
-        window.location.href = 'customer-choice.html';
+    function goToWallet() {
+        window.location.href = 'wallet.html';
     }
 
     // Make functions global
     window.addDigit = addDigit;
     window.clearPIN = clearPIN;
     window.submitPIN = submitPIN;
-    window.goHome = goHome;
+    window.goToWallet = goToWallet;
     window.closeModal = closeModal;
 
     // Clean up on page unload
