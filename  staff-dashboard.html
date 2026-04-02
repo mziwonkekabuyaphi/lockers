@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rands Locker | Staff Dashboard - Two-Factor Security</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .staff-header {
+            background: linear-gradient(135deg, #c62828, #b71c1c);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .staff-header h1 {
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .staff-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #E30613;
+        }
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #E30613;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        
+        /* Unlock Panel */
+        .unlock-panel {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .unlock-panel h2 {
+            color: #E30613;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .two-factor-badge {
+            background: #ff9800;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        .input-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            background: #f8fafc;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #E30613;
+            box-shadow: 0 0 0 3px rgba(227,6,19,0.1);
+        }
+        .unlock-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .unlock-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        /* Pending Requests Section */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .pending-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .pending-card {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-radius: 20px;
+            padding: 18px;
+            border-left: 5px solid #ff9800;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .pending-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .pending-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .pending-locker {
+            font-weight: 800;
+            color: #E30613;
+            font-size: 1.1rem;
+        }
+        .pending-badge {
+            background: #ff9800;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .pending-customer {
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .pending-items {
+            background: rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+        }
+        .pending-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .approve-btn {
+            flex: 1;
+            background: #4caf50;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .reject-btn {
+            flex: 1;
+            background: #e2e8f0;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            color: #475569;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        /* Lockers Grid */
+        .lockers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .locker-card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+        .locker-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .locker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .locker-number {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #E30613;
+        }
+        .status-available {
+            background: #e0f2e9;
+            color: #0e7c3e;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .status-occupied {
+            background: #fee2e2;
+            color: #E30613;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .locker-details {
+            font-size: 0.8rem;
+            color: #475569;
+            margin: 10px 0;
+        }
+        .locker-items {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.75rem;
+        }
+        .view-btn {
+            width: 100%;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+        .view-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+            animation: fadeIn 0.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .modal-header h3 {
+            color: #E30613;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .modal-btn.confirm {
+            background: #E30613;
+            color: white;
+        }
+        .modal-btn.cancel {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            z-index: 1100;
+            display: none;
+            font-size: 0.85rem;
+        }
+        .toast.show {
+            display: block;
+        }
+        
+        .refresh-btn {
+            background: #E30613;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 640px) {
+            .staff-header { flex-direction: column; text-align: center; }
+            .input-group { flex-direction: column; }
+            .unlock-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="staff-header">
+    <div>
+        <h1><i class="fas fa-box"></i> Rands Locker Vault</h1>
+        <p>Staff Dashboard | Two-Factor Security (WhatsApp + PIN)</p>
+    </div>
+    <div class="header-buttons">
+        <button class="header-btn" id="refreshAllBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button class="header-btn" id="openCustomerPortalBtn"><i class="fas fa-users"></i> Customer Portal</button>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card"><div class="stat-number" id="totalLockers">0</div><div class="stat-label">Total Lockers</div></div>
+    <div class="stat-card"><div class="stat-number" id="availableLockers">0</div><div class="stat-label">Available</div></div>
+    <div class="stat-card"><div class="stat-number" id="occupiedLockers">0</div><div class="stat-label">Occupied</div></div>
+    <div class="stat-card"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">Pending Unlocks</div></div>
+</div>
+
+<!-- Unlock Panel -->
+<div class="unlock-panel">
+    <h2><i class="fas fa-key"></i> Unlock Locker</h2>
+    <div class="two-factor-badge">🔐 Two-Factor Authentication Required (WhatsApp + PIN)</div>
+    <div class="input-group">
+        <input type="tel" id="searchPhone" placeholder="Customer WhatsApp Number (e.g., +27712345678)">
+        <input type="password" id="searchPin" placeholder="4-digit PIN" maxlength="4">
+        <button class="unlock-btn" id="searchUnlockBtn"><i class="fas fa-search"></i> Verify & Unlock</button>
+    </div>
+    <div id="searchResult"></div>
+</div>
+
+<!-- Pending Unlock Requests -->
+<div>
+    <div class="section-title">
+        <span><i class="fas fa-bell"></i> 🔔 Pending Unlock Requests</span>
+        <button class="refresh-btn" id="refreshPendingBtn" style="background:#ff9800;"><i class="fas fa-sync-alt"></i> Check New</button>
+    </div>
+    <div id="pendingRequestsGrid" class="pending-grid">
+        <div style="text-align:center; padding:40px; color:#94a3b8;">Loading pending requests...</div>
+    </div>
+</div>
+
+<!-- All Lockers -->
+<div>
+    <div class="section-title">
+        <span><i class="fas fa-archive"></i> 📦 All Lockers</span>
+        <button class="refresh-btn" id="refreshLockersBtn"><i class="fas fa-sync-alt"></i> Refresh Lockers</button>
+    </div>
+    <div id="lockersGrid" class="lockers-grid">
+        <div style="text-align:center; padding:40px; color:#94a3b8;">Loading lockers...</div>
+    </div>
+</div>
+
+<!-- Modal for Locker Details -->
+<div id="lockerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-lock"></i> Locker Details</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modalContent"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-check-circle"></i> Confirm Unlock</h3>
+            <button class="close-modal" onclick="closeConfirmModal()">&times;</button>
+        </div>
+        <div id="confirmContent"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" id="cancelConfirmBtn">Cancel</button>
+            <button class="modal-btn confirm" id="confirmUnlockBtn">Confirm & Unlock</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+    // Storage Keys (same as wallet)
+    const LOCKERS_KEY = 'rands_lockers';
+    const PENDING_UNLOCK_KEY = 'rands_pending_unlocks';
+    const PAYMENT_REQUESTS_KEY = 'rands_payment_requests';
+    
+    let lockers = [];
+    let pendingUnlocks = [];
+    let currentSelectedLocker = null;
+    
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    
+    function loadLockers() {
+        const stored = localStorage.getItem(LOCKERS_KEY);
+        if (stored) {
+            lockers = JSON.parse(stored);
+        } else {
+            // Create default lockers
+            lockers = [];
+            for (let i = 1; i <= 12; i++) {
+                lockers.push({
+                    id: i,
+                    lockerNumber: i,
+                    customer: "",
+                    phone: "",
+                    pin: "",
+                    items: [],
+                    itemsText: "",
+                    status: "Available",
+                    balance: 0,
+                    registrationTime: null
+                });
+            }
+            // Demo occupied locker
+            lockers[0] = {
+                id: 1,
+                lockerNumber: 1,
+                customer: "John Doe",
+                phone: "+27712345678",
+                pin: "1234",
+                items: [{ name: "Heineken 6-pack", price: 89.99 }, { name: "Jameson Whiskey", price: 249.99 }],
+                itemsText: "Heineken 6-pack, Jameson Whiskey",
+                status: "Occupied",
+                balance: 339.98,
+                registrationTime: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+            };
+            saveLockers();
+        }
+        updateStats();
+        renderLockers();
+    }
+    
+    function saveLockers() {
+        localStorage.setItem(LOCKERS_KEY, JSON.stringify(lockers));
+    }
+    
+    function loadPendingUnlocks() {
+        const stored = localStorage.getItem(PENDING_UNLOCK_KEY);
+        pendingUnlocks = stored ? JSON.parse(stored) : [];
+        renderPendingRequests();
+        updateStats();
+    }
+    
+    function savePendingUnlocks() {
+        localStorage.setItem(PENDING_UNLOCK_KEY, JSON.stringify(pendingUnlocks));
+        renderPendingRequests();
+        updateStats();
+    }
+    
+    function updateStats() {
+        const total = lockers.length;
+        const available = lockers.filter(l => l.status === "Available").length;
+        const occupied = lockers.filter(l => l.status === "Occupied").length;
+        const pending = pendingUnlocks.length;
+        
+        document.getElementById('totalLockers').textContent = total;
+        document.getElementById('availableLockers').textContent = available;
+        document.getElementById('occupiedLockers').textContent = occupied;
+        document.getElementById('pendingCount').textContent = pending;
+    }
+    
+    function renderLockers() {
+        const grid = document.getElementById('lockersGrid');
+        if (!grid) return;
+        
+        if (lockers.length === 0) {
+            grid.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">No lockers found</div>';
+            return;
+        }
+        
+        grid.innerHTML = lockers.map(locker => `
+            <div class="locker-card">
+                <div class="locker-header">
+                    <span class="locker-number">Locker #${locker.id}</span>
+                    <span class="${locker.status === 'Available' ? 'status-available' : 'status-occupied'}">
+                        ${locker.status === 'Available' ? '🟢 Available' : '🔴 Occupied'}
+                    </span>
+                </div>
+                ${locker.status === 'Occupied' ? `
+                    <div class="locker-details">
+                        <strong>👤 Customer:</strong> ${escapeHtml(locker.customer)}<br>
+                        <strong>📞 WhatsApp:</strong> ${escapeHtml(locker.phone)}<br>
+                        <strong>💰 Value:</strong> R${locker.balance?.toFixed(2) || '0.00'}
+                    </div>
+                    <div class="locker-items">
+                        <strong>📦 Items:</strong><br>
+                        ${locker.items && locker.items.length ? locker.items.map(i => `• ${i.name}`).join('<br>') : (locker.itemsText || 'No items listed')}
+                    </div>
+                ` : '<div class="locker-details"><em>Ready for assignment</em></div>'}
+                <button class="view-btn" onclick="viewLockerDetails(${locker.id})">
+                    <i class="fas fa-eye"></i> View Details
+                </button>
+            </div>
+        `).join('');
+    }
+    
+    function renderPendingRequests() {
+        const grid = document.getElementById('pendingRequestsGrid');
+        if (!grid) return;
+        
+        if (pendingUnlocks.length === 0) {
+            grid.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">No pending unlock requests</div>';
+            return;
+        }
+        
+        grid.innerHTML = pendingUnlocks.map(req => `
+            <div class="pending-card">
+                <div class="pending-header">
+                    <span class="pending-locker">🔐 Locker #${req.lockerId}</span>
+                    <span class="pending-badge">⏳ Pending</span>
+                </div>
+                <div class="pending-customer">
+                    <i class="fas fa-user"></i> <strong>${escapeHtml(req.customer)}</strong><br>
+                    <i class="fab fa-whatsapp"></i> ${escapeHtml(req.phone)}
+                </div>
+                <div class="pending-items">
+                    <strong>📦 Items:</strong><br>
+                    ${req.items && req.items.length ? req.items.map(i => `• ${i.name}`).join('<br>') : (req.itemsText || 'No items')}
+                </div>
+                <div class="pending-actions">
+                    <button class="approve-btn" onclick="approveUnlock(${req.lockerId})">
+                        <i class="fas fa-check"></i> Approve & Unlock
+                    </button>
+                    <button class="reject-btn" onclick="rejectUnlock(${req.id})">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function approveUnlock(lockerId) {
+        const locker = lockers.find(l => l.id === lockerId);
+        if (!locker) {
+            showToast("Locker not found");
+            return;
+        }
+        
+        // Show confirmation modal
+        currentSelectedLocker = locker;
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmContent = document.getElementById('confirmContent');
+        
+        let itemsHtml = '';
+        if (locker.items && locker.items.length) {
+            itemsHtml = '<ul style="margin-left:20px; margin-top:8px;">' + locker.items.map(i => `<li>${i.name} - R${i.price?.toFixed(2) || '0.00'}</li>`).join('') + '</ul>';
+        } else if (locker.itemsText) {
+            itemsHtml = `<p>${locker.itemsText}</p>`;
+        }
+        
+        confirmContent.innerHTML = `
+            <p><strong>Customer:</strong> ${escapeHtml(locker.customer)}</p>
+            <p><strong>WhatsApp:</strong> ${escapeHtml(locker.phone)}</p>
+            <p><strong>PIN Verified:</strong> ****</p>
+            <p><strong>Locker #${locker.id}</strong></p>
+            <div style="background:#f8fafc; padding:12px; border-radius:16px; margin:12px 0;">
+                <strong>📦 Items to release:</strong>
+                ${itemsHtml}
+            </div>
+            <p style="color:#ff9800; margin-top:8px;"><i class="fas fa-exclamation-triangle"></i> Confirm that the customer has collected all items before unlocking.</p>
+        `;
+        confirmModal.classList.add('active');
+    }
+    
+    function executeUnlock() {
+        if (!currentSelectedLocker) return;
+        
+        const locker = currentSelectedLocker;
+        const lockerIndex = lockers.findIndex(l => l.id === locker.id);
+        
+        if (lockerIndex !== -1) {
+            // Release locker
+            lockers[lockerIndex] = {
+                ...lockers[lockerIndex],
+                customer: "",
+                phone: "",
+                pin: "",
+                items: [],
+                itemsText: "",
+                status: "Available",
+                balance: 0,
+                registrationTime: null
+            };
+            saveLockers();
+            
+            // Remove from pending unlocks
+            pendingUnlocks = pendingUnlocks.filter(req => req.lockerId !== locker.id);
+            savePendingUnlocks();
+            
+            // Also remove from payment requests
+            const payments = JSON.parse(localStorage.getItem(PAYMENT_REQUESTS_KEY) || '[]');
+            const updatedPayments = payments.filter(p => !(p.type === 'locker' && p.targetAccount === locker.phone));
+            localStorage.setItem(PAYMENT_REQUESTS_KEY, JSON.stringify(updatedPayments));
+            
+            showToast(`✅ Locker #${locker.id} unlocked and released!`);
+            
+            // Refresh displays
+            renderLockers();
+            renderPendingRequests();
+            updateStats();
+        }
+        
+        closeConfirmModal();
+        currentSelectedLocker = null;
+    }
+    
+    function rejectUnlock(requestId) {
+        pendingUnlocks = pendingUnlocks.filter(req => req.id !== requestId);
+        savePendingUnlocks();
+        showToast("❌ Unlock request rejected");
+    }
+    
+    function searchAndUnlock() {
+        const phone = document.getElementById('searchPhone').value.trim();
+        const pin = document.getElementById('searchPin').value.trim();
+        const resultDiv = document.getElementById('searchResult');
+        
+        if (!phone || !pin) {
+            showToast("Please enter both WhatsApp number and PIN");
+            return;
+        }
+        
+        if (pin.length !== 4 || !/^\d+$/.test(pin)) {
+            showToast("PIN must be 4 digits");
+            return;
+        }
+        
+        const locker = lockers.find(l => l.status === "Occupied" && l.phone === phone && l.pin === pin);
+        
+        if (locker) {
+            let itemsHtml = '';
+            if (locker.items && locker.items.length) {
+                itemsHtml = '<ul style="margin:10px 0 10px 20px;">' + locker.items.map(i => `<li>${i.name} - R${i.price?.toFixed(2) || '0.00'}</li>`).join('') + '</ul>';
+            } else if (locker.itemsText) {
+                itemsHtml = `<p>${locker.itemsText}</p>`;
+            }
+            
+            resultDiv.innerHTML = `
+                <div style="background:#e8f5e8; border-radius:20px; padding:20px; margin-top:16px; border-left:4px solid #4caf50;">
+                    <h4 style="color:#4caf50; margin-bottom:12px;">✅ Customer Verified!</h4>
+                    <p><strong>👤 Customer:</strong> ${escapeHtml(locker.customer)}</p>
+                    <p><strong>📞 WhatsApp:</strong> ${escapeHtml(locker.phone)}</p>
+                    <p><strong>💰 Total Value:</strong> R${locker.balance?.toFixed(2) || '0.00'}</p>
+                    <p><strong>📦 Items:</strong></p>
+                    ${itemsHtml}
+                    <button onclick="approveUnlock(${locker.id})" style="background:#4caf50; color:white; border:none; padding:12px 24px; border-radius:40px; margin-top:16px; width:100%; font-weight:600; cursor:pointer;">
+                        <i class="fas fa-unlock-alt"></i> Confirm & Unlock Locker
+                    </button>
+                </div>
+            `;
+        } else {
+            const phoneMatch = lockers.find(l => l.status === "Occupied" && l.phone === phone);
+            if (phoneMatch) {
+                resultDiv.innerHTML = `
+                    <div style="background:#fee2e2; border-radius:20px; padding:20px; margin-top:16px; border-left:4px solid #E30613;">
+                        <h4 style="color:#E30613;">❌ Incorrect PIN</h4>
+                        <p>Found locker for <strong>${escapeHtml(phoneMatch.phone)}</strong> but PIN is incorrect.</p>
+                        <p>Customer: ${escapeHtml(phoneMatch.customer)} | Locker #${phoneMatch.id}</p>
+                        <p>Please verify the PIN with the customer.</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div style="background:#fee2e2; border-radius:20px; padding:20px; margin-top:16px; border-left:4px solid #E30613;">
+                        <h4 style="color:#E30613;">❌ No Locker Found</h4>
+                        <p>No active locker found with WhatsApp: <strong>${escapeHtml(phone)}</strong> and PIN: <strong>${pin}</strong></p>
+                        <p>Please verify credentials or ask customer to register first.</p>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    function viewLockerDetails(lockerId) {
+        const locker = lockers.find(l => l.id === lockerId);
+        if (!locker) return;
+        
+        const modal = document.getElementById('lockerModal');
+        const content = document.getElementById('modalContent');
+        
+        let itemsHtml = '';
+        if (locker.items && locker.items.length) {
+            itemsHtml = '<ul style="margin-top:8px; margin-left:20px;">' + locker.items.map(i => `<li>${i.name} - R${i.price?.toFixed(2) || '0.00'}</li>`).join('') + '</ul>';
+        } else if (locker.itemsText) {
+            itemsHtml = `<p>${locker.itemsText}</p>`;
+        }
+        
+        content.innerHTML = `
+            <p><strong>Locker Number:</strong> #${locker.id}</p>
+            <p><strong>Status:</strong> ${locker.status === 'Available' ? '🟢 Available' : '🔴 Occupied'}</p>
+            ${locker.status === 'Occupied' ? `
+                <p><strong>👤 Customer:</strong> ${escapeHtml(locker.customer)}</p>
+                <p><strong>📞 WhatsApp:</strong> ${escapeHtml(locker.phone)}</p>
+                <p><strong>🔑 PIN:</strong> ****</p>
+                <p><strong>💰 Total Value:</strong> R${locker.balance?.toFixed(2) || '0.00'}</p>
+                <p><strong>📦 Stored Items:</strong></p>
+                ${itemsHtml}
+                <p><strong>⏱️ Registered:</strong> ${locker.registrationTime ? new Date(locker.registrationTime).toLocaleString() : 'N/A'}</p>
+            ` : '<p><em>Locker is available for new customers</em></p>'}
+        `;
+        
+        modal.classList.add('active');
+    }
+    
+    function closeModal() {
+        document.getElementById('lockerModal').classList.remove('active');
+    }
+    
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('active');
+    }
+    
+    function refreshAll() {
+        loadLockers();
+        loadPendingUnlocks();
+        showToast("Data refreshed");
+    }
+    
+    function openCustomerPortal() {
+        window.open('customer-choice.html', '_blank', 'width=500,height=700');
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Auto-refresh every 5 seconds
+    let autoRefreshInterval = setInterval(() => {
+        loadLockers();
+        loadPendingUnlocks();
+    }, 5000);
+    
+    // Event Listeners
+    document.getElementById('refreshAllBtn')?.addEventListener('click', refreshAll);
+    document.getElementById('refreshLockersBtn')?.addEventListener('click', () => { loadLockers(); showToast("Lockers refreshed"); });
+    document.getElementById('refreshPendingBtn')?.addEventListener('click', () => { loadPendingUnlocks(); showToast("Pending requests refreshed"); });
+    document.getElementById('openCustomerPortalBtn')?.addEventListener('click', openCustomerPortal);
+    document.getElementById('searchUnlockBtn')?.addEventListener('click', searchAndUnlock);
+    document.getElementById('confirmUnlockBtn')?.addEventListener('click', executeUnlock);
+    document.getElementById('cancelConfirmBtn')?.addEventListener('click', closeConfirmModal);
+    
+    // Enter key support
+    document.getElementById('searchPin')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchAndUnlock();
+    });
+    document.getElementById('searchPhone')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchAndUnlock();
+    });
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const lockerModal = document.getElementById('lockerModal');
+        const confirmModal = document.getElementById('confirmModal');
+        if (event.target === lockerModal) lockerModal.classList.remove('active');
+        if (event.target === confirmModal) confirmModal.classList.remove('active');
+    };
+    
+    // Initialize
+    loadLockers();
+    loadPendingUnlocks();
+</script>
+</body>
+</html>
