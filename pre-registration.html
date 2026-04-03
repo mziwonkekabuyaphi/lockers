@@ -295,33 +295,6 @@
             font-weight: 700;
         }
 
-        .pin-display {
-            background: #e8f5e8;
-            padding: 20px;
-            border-radius: 24px;
-            text-align: center;
-            margin: 20px 0;
-            border-left: 6px solid #4caf50;
-        }
-
-        .pin-number {
-            font-size: 42px;
-            font-weight: bold;
-            color: #b71c1c;
-            letter-spacing: 8px;
-            font-family: monospace;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 60px;
-            display: inline-block;
-            margin: 15px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
         .small-note {
             font-size: 13px;
             color: #2c3e50;
@@ -374,42 +347,21 @@
             font-size: 1.1rem;
         }
 
-        /* Check Vault Balance Section */
-        .check-balance-section {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            border-left: 6px solid #4caf50;
+        /* PIN Input Group */
+        .pin-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
-        .balance-result {
-            background: #2c3e50;
-            color: #f1c40f;
-            padding: 20px;
-            border-radius: 28px;
-            text-align: center;
-            margin-top: 15px;
+        .pin-input-group input {
+            flex: 2;
+            min-width: 150px;
         }
-        .balance-result-amount {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-        .balance-result-label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        .items-details {
-            margin-top: 15px;
-            background: white;
-            border-radius: 20px;
-            padding: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .items-details p {
-            margin: 5px 0;
-            font-size: 14px;
-            border-bottom: 1px solid #eee;
-            padding: 6px 0;
+        .pin-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
         }
 
         /* Modal Styles */
@@ -506,10 +458,6 @@
             .product-modal-grid {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
-            .pin-number {
-                font-size: 28px;
-                letter-spacing: 4px;
-            }
             .remove-item {
                 width: 28px;
                 height: 28px;
@@ -520,8 +468,11 @@
                 white-space: nowrap;
                 padding: 8px 16px;
             }
-            .balance-result-amount {
-                font-size: 1.8rem;
+            .pin-input-group {
+                flex-direction: column;
+            }
+            .pin-input-group input, .pin-input-group button {
+                width: 100%;
             }
         }
     </style>
@@ -530,8 +481,8 @@
 
 <header>
     <div class="header-title">
-        <h1>Pre‑register Your Items</h1>
-        <p>Secure your items now – receive a PIN for later collection</p>
+        <h1>Rands Locker</h1>
+        <p>Secure your items – create your own PIN for later collection</p>
     </div>
 </header>
 
@@ -539,25 +490,29 @@
     <div class="info-box">
         <div class="security-badge">🔐 TWO‑FACTOR READY</div>
         <div class="info-description">
-            <strong>Pre‑register your items</strong> – you’ll receive a 5‑digit PIN. Complete locker assignment at Rands Smart Counter.
+            <strong>Pre‑register your items</strong> – you'll create your own 4-6 digit PIN. Complete locker assignment at Rands Smart Counter.
         </div>
     </div>
 
+    <!-- SECTION 1: Select items to add -->
     <div class="section">
-        <h2>🛒 1. Select your items</h2>
+        <h2>🛒 1. Select items to add</h2>
         <button id="openProductModalBtn" class="add-product-main-btn">
             ➕ Add Product / Browse Items
         </button>
         <div class="selected-items" id="selectedItemsContainer">
-            <h4>📦 Your basket (adjust quantities):</h4>
+            <h4>📦 Your items basket:</h4>
             <div id="selectedItemsList">
                 <p style="color: #999; text-align: center;">No items selected yet</p>
             </div>
         </div>
     </div>
 
+    <!-- SECTION 2: Create a new vault -->
     <div class="section">
-        <h2>📋 2. Your details</h2>
+        <h2>🔐 2. Create a new vault</h2>
+        <p style="margin-bottom: 16px; color: #555;">New customer? Create your personal vault with a secure PIN.</p>
+        
         <div class="form-field-spacing">
             <label for="preName">Full name</label>
             <input type="text" id="preName" placeholder="e.g., Mziwonke KaBuyaphi" value="">
@@ -565,52 +520,20 @@
         <div class="form-field-spacing">
             <label for="prePhone">WhatsApp number</label>
             <input type="tel" id="prePhone" placeholder="0635713652" value="">
-            <p style="font-size: 12px; color: #666; margin-top: 12px; margin-bottom: 0; padding-left: 4px;">
-                You will need this number together with your PIN to finalise locker assignment.
+            <p style="font-size: 12px; color: #666; margin-top: 8px; margin-bottom: 0; padding-left: 4px;">
+                You will need this number together with your PIN to access your vault.
             </p>
         </div>
-        <button onclick="generatePreRegister()" style="width: 100%; margin-top: 20px; background: #4caf50;">
-            🔑 Generate PIN & Pre‑register
+        <div class="form-field-spacing">
+            <label for="prePin">Create your PIN (4-6 digits)</label>
+            <div class="pin-input-group">
+                <input type="password" id="prePin" placeholder="Enter your custom PIN" maxlength="6" inputmode="numeric">
+            </div>
+            <p class="pin-hint">🔐 Choose a 4-6 digit PIN that you will remember. You'll need this to access your items.</p>
+        </div>
+        <button onclick="createNewVault()" style="width: 100%; margin-top: 20px; background: #4caf50;">
+            🔑 Create New Vault & Pre-register
         </button>
-    </div>
-
-    <div id="preRegisterDisplay" class="pin-display hidden">
-        <p>✅ Pre‑registration successful!</p>
-        <p>Your 5‑digit PIN:</p>
-        <div class="pin-number" id="generatedPIN">12345</div>
-        <p><strong>Items:</strong> <span id="preRegisteredItems"></span></p>
-        <div style="background: #fff3cd; border-radius: 40px; padding: 12px; margin-top: 15px;">
-            ⚠️ <strong>Keep this PIN safe!</strong> You will need to show it together with your WhatsApp number at the counter.
-        </div>
-    </div>
-
-    <!-- NEW: Check Your Vault Balance Section - Customer facing -->
-    <div class="section check-balance-section">
-        <h2>🔍 Check Your Vault Balance</h2>
-        <p style="margin-bottom: 12px; color: #2e7d32;">Enter the phone number and PIN you received to view your stored items and total value.</p>
-        
-        <div class="form-field-spacing">
-            <label for="checkPhone">Phone Number</label>
-            <input type="tel" id="checkPhone" placeholder="e.g., 0635713652" value="">
-        </div>
-        
-        <div class="form-field-spacing">
-            <label for="checkPin">5-digit PIN</label>
-            <input type="password" id="checkPin" placeholder="Enter your 5-digit PIN" maxlength="5" inputmode="numeric">
-        </div>
-        
-        <button id="checkBalanceBtn" style="width: 100%; background: #4caf50;">🔍 Check My Balance</button>
-        
-        <div id="balanceResultContainer" style="display: none; margin-top: 20px;">
-            <div class="balance-result">
-                <div class="balance-result-label">YOUR VAULT VALUE</div>
-                <div class="balance-result-amount" id="customerBalanceAmount">R 0.00</div>
-            </div>
-            <div class="items-details" id="customerItemsList">
-                <p style="color: #666;">Your items will appear here...</p>
-            </div>
-            <button id="clearResultBtn" style="background: #6c757d; margin-top: 12px; width: auto; padding: 8px 20px;">Clear</button>
-        </div>
     </div>
 
     <div class="staff-link" id="staffWalletRedirectBtn">
@@ -618,7 +541,7 @@
     </div>
 
     <div class="small-note">
-        💡 <strong>How it works:</strong> After pre‑registering, bring your PIN and WhatsApp number to the counter. Staff will verify and assign you a physical locker. Your items will be stored securely until collection.
+        💡 <strong>How it works:</strong> After creating a vault, bring your chosen PIN and WhatsApp number to the counter. Staff will verify and assign you a physical locker. Your items will be stored securely until collection.
     </div>
 </main>
 
@@ -642,7 +565,7 @@
         "Champagne (Moet)": 549.99, "Prosecco": 149.99
     };
 
-    let selectedItems = [];
+    let selectedItems = []; // For new items to add to existing vault
 
     function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
     
@@ -712,96 +635,55 @@
         return total;
     }
 
-    // Check customer balance by phone and PIN
-    function checkCustomerBalance() {
-        const phone = document.getElementById('checkPhone').value.trim();
-        const pin = document.getElementById('checkPin').value.trim();
-        
-        if (!phone) {
-            showModal("Missing Info", "Please enter your phone number.");
-            return;
-        }
-        if (!pin) {
-            showModal("Missing Info", "Please enter your 5-digit PIN.");
-            return;
-        }
-        if (pin.length !== 5 || !/^\d+$/.test(pin)) {
-            showModal("Invalid PIN", "PIN must be exactly 5 digits.");
-            return;
-        }
-        
-        // Search in pre-registrations
-        const preRegistrations = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
-        const found = preRegistrations.find(reg => reg.phone === phone && reg.pin === pin);
-        
-        const resultContainer = document.getElementById('balanceResultContainer');
-        const balanceAmountSpan = document.getElementById('customerBalanceAmount');
-        const itemsListDiv = document.getElementById('customerItemsList');
-        
-        if (found) {
-            const totalValue = calculateRegistrationValue(found.items);
-            balanceAmountSpan.textContent = `R ${totalValue.toFixed(2)}`;
-            
-            // Display items nicely
-            let itemsHtml = `<p style="font-weight: 600; margin-bottom: 8px;">📦 Your stored items:</p>`;
-            const itemsParts = found.items.split(',');
-            for (let part of itemsParts) {
-                const match = part.match(/(.+?)\s*x(\d+)/);
-                if (match) {
-                    const productName = match[1].trim();
-                    const qty = match[2];
-                    const price = productsWithValues[productName] || 0;
-                    const itemTotal = price * parseInt(qty, 10);
-                    itemsHtml += `<p>• ${productName} x${qty} — R ${itemTotal.toFixed(2)}</p>`;
-                }
-            }
-            itemsHtml += `<p style="margin-top: 10px; font-size: 12px; color: #666;">Status: ${found.status || "Pre-registered"} | Registered: ${new Date(found.timestamp).toLocaleDateString()}</p>`;
-            itemsListDiv.innerHTML = itemsHtml;
-            resultContainer.style.display = 'block';
-            showToast("✅ Balance found!");
-        } else {
-            showModal("Not Found", "No pre-registration found with the provided phone number and PIN. Please check your details or complete a pre-registration first.");
-            resultContainer.style.display = 'none';
-        }
-    }
-    
-    function clearBalanceResult() {
-        document.getElementById('balanceResultContainer').style.display = 'none';
-        document.getElementById('checkPhone').value = '';
-        document.getElementById('checkPin').value = '';
-        showToast("Cleared");
-    }
-
-    // Pre-registration
-    function generateRandomPIN() { return Math.floor(10000 + Math.random() * 90000).toString(); }
-    function showModal(title, message) { document.getElementById('modalTitle').innerText = title; document.getElementById('modalMessage').innerHTML = message; document.getElementById('customModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
-    
-    function generatePreRegister() {
+    // Create new vault
+    function createNewVault() {
         const name = document.getElementById('preName').value.trim(); 
         const phone = document.getElementById('prePhone').value.trim();
+        const customPin = document.getElementById('prePin').value.trim();
+        
         if (!name) { showModal('Missing name', 'Please enter your name.'); return; }
         if (!phone) { showModal('Missing phone', 'Please enter your WhatsApp number.'); return; }
         if (!phone.match(/^[\+]?[0-9\s\-\(\)]{10,}$/)) { showModal('Invalid phone', 'Please enter a valid phone number.'); return; }
+        if (!customPin) { showModal('Missing PIN', 'Please create a 4-6 digit PIN.'); return; }
+        if (customPin.length < 4 || customPin.length > 6 || !/^\d+$/.test(customPin)) { 
+            showModal('Invalid PIN', 'PIN must be 4-6 digits and contain only numbers.'); 
+            return; 
+        }
         if (selectedItems.length === 0) { showModal('No items', 'Please select at least one item to store.'); return; }
         
-        const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', '); 
-        const pin = generateRandomPIN();
-        const preReg = { id: Date.now(), name, phone, items: itemsString, pin, status: "Pre-registered", timestamp: new Date().toISOString() };
-        const existing = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]'); 
-        existing.push(preReg); 
-        localStorage.setItem('randsPreRegistered', JSON.stringify(existing));
+        // Check if phone number already has a registration
+        const existingRegs = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
+        const phoneExists = existingRegs.some(reg => reg.phone === phone);
+        if (phoneExists) {
+            showModal('Vault Exists', 'This phone number already has a vault. Please use the "Your vault - Add more items" section to add to your existing vault.');
+            return;
+        }
         
-        document.getElementById('generatedPIN').textContent = pin; 
-        document.getElementById('preRegisteredItems').textContent = itemsString; 
-        document.getElementById('preRegisterDisplay').classList.remove('hidden');
-        showModal('Pre-registration complete', `✅ Pre-registration successful!\n\nYour PIN: ${pin}\n\nPlease present this PIN and your WhatsApp number at the counter.\n\nTotal Value: R ${calculateRegistrationValue(itemsString).toFixed(2)}`);
+        const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', '); 
+        const preReg = { 
+            id: Date.now(), 
+            name, 
+            phone, 
+            items: itemsString, 
+            pin: customPin, 
+            status: "Pre-registered", 
+            timestamp: new Date().toISOString() 
+        };
+        existingRegs.push(preReg); 
+        localStorage.setItem('randsPreRegistered', JSON.stringify(existingRegs));
+        
+        // Show modal only - no persistent display section
+        showModal('Vault Created!', `✅ New vault created successfully!\n\nYour PIN: ${customPin}\n\nItems: ${itemsString}\n\nTotal Value: R ${calculateRegistrationValue(itemsString).toFixed(2)}\n\n⚠️ Keep your PIN safe! You will need to show it together with your WhatsApp number at the counter.`);
         
         selectedItems = []; 
         updateSelectedItemsDisplay(); 
         document.getElementById('preName').value = ''; 
         document.getElementById('prePhone').value = '';
+        document.getElementById('prePin').value = '';
     }
+
+    function showModal(title, message) { document.getElementById('modalTitle').innerText = title; document.getElementById('modalMessage').innerHTML = message; document.getElementById('customModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
     
     function staffDashboardAndWalletRedirect() { window.location.href = 'wallet.html'; }
     function initStaffLink() { const staffDiv = document.getElementById('staffWalletRedirectBtn'); if (staffDiv) staffDiv.addEventListener('click', (e) => { e.preventDefault(); staffDashboardAndWalletRedirect(); }); }
@@ -829,19 +711,15 @@
     window.increaseQuantity = increaseQuantity;
     window.decreaseQuantity = decreaseQuantity;
     window.removeSelectedItem = removeSelectedItem;
-    window.generatePreRegister = generatePreRegister;
+    window.createNewVault = createNewVault;
     window.openProductModal = openProductModal;
     window.closeProductModal = closeProductModal;
     window.showModal = showModal;
     window.closeModal = closeModal;
     window.staffDashboardAndWalletRedirect = staffDashboardAndWalletRedirect;
-    window.checkCustomerBalance = checkCustomerBalance;
-    window.clearBalanceResult = clearBalanceResult;
 
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('openProductModalBtn').addEventListener('click', openProductModal);
-        document.getElementById('checkBalanceBtn').addEventListener('click', checkCustomerBalance);
-        document.getElementById('clearResultBtn').addEventListener('click', clearBalanceResult);
         document.getElementById('productPickerModal').addEventListener('click', (e) => { if (e.target === document.getElementById('productPickerModal')) closeProductModal(); });
         document.getElementById('customModal').addEventListener('click', (e) => { if (e.target === document.getElementById('customModal')) closeModal(); });
         updateSelectedItemsDisplay();
