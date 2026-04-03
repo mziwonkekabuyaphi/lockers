@@ -106,11 +106,21 @@
             transform: scale(0.98);
         }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
+        /* ADD PRODUCT BUTTON */
+        .add-product-main-btn {
+            background: #4caf50;
+            width: 100%;
             margin-bottom: 20px;
+            font-size: 1.1rem;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-product-main-btn:hover {
+            background: #45a049;
         }
 
         .product-card {
@@ -120,11 +130,13 @@
             text-align: center;
             border: 1px solid #eee;
             transition: 0.2s;
+            cursor: pointer;
         }
 
         .product-card:hover {
             border-color: #b71c1c;
             background: #fff;
+            transform: translateY(-2px);
         }
 
         .product-name {
@@ -215,19 +227,28 @@
         }
 
         .remove-item {
+            background: #ffe0e0;
             color: #b71c1c;
             cursor: pointer;
             font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 40px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin-left: 10px;
-            background: #ffe0e0;
+            transition: 0.2s;
+            font-size: 18px;
+            line-height: 1;
         }
 
         .remove-item:hover {
             background: #ffcdd2;
+            transform: scale(1.05);
         }
 
+        /* Info box with two lines */
         .info-box {
             background: #b71c1c;
             color: white;
@@ -243,7 +264,14 @@
             border-radius: 40px;
             display: inline-block;
             font-size: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .info-description {
+            font-size: 1rem;
+            line-height: 1.4;
+            font-weight: 500;
+            margin-top: 4px;
         }
 
         .pin-display {
@@ -296,24 +324,34 @@
             font-weight: 600;
         }
 
+        /* Simplified staff link */
         .staff-link {
             background: #e3f2fd;
             border-left: 5px solid #2196f3;
-            padding: 12px 20px;
+            padding: 14px 20px;
             border-radius: 60px;
             text-align: center;
             margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
+        .staff-link:hover {
+            background: #d4e6f5;
+            transform: translateY(-2px);
+        }
         .staff-link a {
             color: #b71c1c;
             font-weight: bold;
             text-decoration: none;
             cursor: pointer;
-        }
-
-        .staff-link a:hover {
-            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.1rem;
         }
 
         /* Modal Styles */
@@ -332,12 +370,14 @@
         .modal-content {
             background: white;
             border-radius: 28px;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
             padding: 24px;
             text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             border-top: 6px solid #b71c1c;
+            max-height: 85vh;
+            overflow-y: auto;
         }
         .modal-content h3 {
             color: #b71c1c;
@@ -364,14 +404,35 @@
         .modal-content button:hover {
             background: #8e1414;
         }
+        .product-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 6px;
+        }
+        .close-modal-btn {
+            background: #6c757d !important;
+            margin-top: 10px;
+        }
+        .close-modal-btn:hover {
+            background: #5a6268 !important;
+        }
 
         @media (max-width: 480px) {
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            .product-modal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
             .pin-number {
                 font-size: 28px;
                 letter-spacing: 4px;
+            }
+            .remove-item {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
             }
         }
     </style>
@@ -380,25 +441,28 @@
 
 <header>
     <div class="header-title">
-        <h1>📱 Rands Locker · Pre‑register</h1>
+        <h1>Pre‑register Your Items</h1>
         <p>Secure your items now – receive a PIN for later collection</p>
     </div>
 </header>
 
 <main>
+    <!-- Updated info-box: badge on its own line, description on new line below -->
     <div class="info-box">
-        <span class="security-badge">🔐 TWO‑FACTOR READY</span>
-        <strong>Pre‑register your items</strong> – we'll give you a 5‑digit PIN. When you arrive at the counter, present your WhatsApp number and this PIN to complete locker assignment.
+        <div class="security-badge">🔐 TWO‑FACTOR READY</div>
+        <div class="info-description">
+            Pre‑register your items – you’ll receive a 5‑digit PIN. Complete locker assignment at Rands Smart Counter.
+        </div>
     </div>
 
     <!-- Item selection section -->
     <div class="section">
         <h2>🛒 1. Select your items</h2>
 
-        <!-- Product grid -->
-        <div class="product-grid" id="productGrid">
-            <!-- Products will be populated by JS -->
-        </div>
+        <!-- ADD PRODUCT button -->
+        <button id="openProductModalBtn" class="add-product-main-btn">
+            ➕ Add Product / Browse Items
+        </button>
 
         <!-- Basket -->
         <div class="selected-items" id="selectedItemsContainer">
@@ -417,14 +481,16 @@
 
         <label for="prePhone">WhatsApp number (required for collection)</label>
         <input type="tel" id="prePhone" placeholder="+27 82 123 4567" value="+27 82 123 4567">
-        <p style="font-size: 12px; color: #666; margin-top: -8px;">You will need this number together with your PIN to finalise locker assignment.</p>
+        <p style="font-size: 12px; color: #666; margin-top: 12px; margin-bottom: 0; padding-left: 4px;">
+            You will need this number together with your PIN to finalise locker assignment.
+        </p>
 
-        <button onclick="generatePreRegister()" style="width: 100%; margin-top: 15px; background: #4caf50;">
+        <button onclick="generatePreRegister()" style="width: 100%; margin-top: 20px; background: #4caf50;">
             🔑 Generate PIN & Pre‑register
         </button>
     </div>
 
-    <!-- PIN display (hidden until generated) -->
+    <!-- PIN display -->
     <div id="preRegisterDisplay" class="pin-display hidden">
         <p>✅ Pre‑registration successful!</p>
         <p>Your 5‑digit PIN:</p>
@@ -435,8 +501,11 @@
         </div>
     </div>
 
-    <div class="staff-link">
-        👥 <strong>Staff:</strong> <a onclick="openStaffDashboard()">Open Rands Vault Dashboard</a> to view all pre‑registrations and assign lockers.
+    <!-- Simplified Staff Link: Only Wallet Access -->
+    <div class="staff-link" id="staffWalletRedirectBtn">
+        <a id="staffActionLink">
+            💰 <strong>Wallet Access</strong>
+        </a>
     </div>
 
     <div class="small-note">
@@ -448,7 +517,17 @@
     Created by <span>Mziwonke KaBuyaphi</span> | 🔐 Two‑Factor Security Ready
 </div>
 
-<!-- Modal structure -->
+<!-- Modal for product selection -->
+<div id="productPickerModal" class="modal">
+    <div class="modal-content">
+        <h3>📦 Select Products</h3>
+        <p style="margin-bottom: 8px;">Click on any item to add it to your basket</p>
+        <div id="productModalGrid" class="product-modal-grid"></div>
+        <button class="close-modal-btn" onclick="closeProductModal()">Close</button>
+    </div>
+</div>
+
+<!-- Alert modal -->
 <div id="customModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Notice</h3>
@@ -458,7 +537,7 @@
 </div>
 
 <script>
-    // ----- Product List -----
+    // Product list
     const products = [
         "Heineken Beer 6-pack",
         "Castle Lager 6-pack",
@@ -482,21 +561,14 @@
         "Prosecco"
     ];
 
-    let selectedItems = []; // { name: string, quantity: number }
+    let selectedItems = [];
 
-    // ----- Render product grid -----
-    function renderProductGrid() {
-        const grid = document.getElementById('productGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="product-name">${escapeHtml(product)}</div>
-                <button class="add-product-btn" onclick="addProduct('${escapeHtml(product)}')">➕ Add</button>
-            `;
-            grid.appendChild(card);
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
     }
 
@@ -511,17 +583,21 @@
     }
 
     function increaseQuantity(index) {
-        selectedItems[index].quantity += 1;
-        updateSelectedItemsDisplay();
+        if (selectedItems[index]) {
+            selectedItems[index].quantity += 1;
+            updateSelectedItemsDisplay();
+        }
     }
 
     function decreaseQuantity(index) {
-        if (selectedItems[index].quantity > 1) {
-            selectedItems[index].quantity -= 1;
-        } else {
-            selectedItems.splice(index, 1);
+        if (selectedItems[index]) {
+            if (selectedItems[index].quantity > 1) {
+                selectedItems[index].quantity -= 1;
+            } else {
+                selectedItems.splice(index, 1);
+            }
+            updateSelectedItemsDisplay();
         }
-        updateSelectedItemsDisplay();
     }
 
     function removeSelectedItem(index) {
@@ -536,7 +612,6 @@
             container.innerHTML = '<p style="color: #999; text-align: center;">No items selected yet</p>';
             return;
         }
-
         let html = '';
         selectedItems.forEach((item, idx) => {
             html += `
@@ -547,14 +622,44 @@
                         <span class="qty-display">${item.quantity}</span>
                         <button class="qty-btn" onclick="increaseQuantity(${idx})">+</button>
                     </div>
-                    <span class="remove-item" onclick="removeSelectedItem(${idx})">✖ Remove</span>
+                    <div class="remove-item" onclick="removeSelectedItem(${idx})">✖</div>
                 </div>
             `;
         });
         container.innerHTML = html;
     }
 
-    // ----- Modal functions -----
+    // Product Modal
+    function openProductModal() {
+        const modal = document.getElementById('productPickerModal');
+        const gridContainer = document.getElementById('productModalGrid');
+        if (!gridContainer) return;
+        gridContainer.innerHTML = '';
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-name">${escapeHtml(product)}</div>
+                <button class="add-product-btn" onclick="addProductFromModal('${escapeHtml(product)}')">➕ Add</button>
+            `;
+            gridContainer.appendChild(card);
+        });
+        modal.style.display = 'flex';
+    }
+
+    function addProductFromModal(productName) {
+        addProduct(productName);
+    }
+
+    function closeProductModal() {
+        document.getElementById('productPickerModal').style.display = 'none';
+    }
+
+    // Pre-registration
+    function generateRandomPIN() {
+        return Math.floor(10000 + Math.random() * 90000).toString();
+    }
+
     function showModal(title, message) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalMessage').innerHTML = message;
@@ -563,14 +668,6 @@
 
     function closeModal() {
         document.getElementById('customModal').style.display = 'none';
-    }
-
-    window.showModal = showModal;
-    window.closeModal = closeModal;
-
-    // ----- Pre-registration Logic -----
-    function generateRandomPIN() {
-        return Math.floor(10000 + Math.random() * 90000).toString();
     }
 
     function generatePreRegister() {
@@ -594,11 +691,9 @@
             return;
         }
 
-        // Format items string
         const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', ');
         const pin = generateRandomPIN();
 
-        // Create pre-registration record
         const preReg = {
             id: Date.now(),
             name: name,
@@ -609,50 +704,90 @@
             timestamp: new Date().toISOString()
         };
 
-        // Store in localStorage
         const existing = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
         existing.push(preReg);
         localStorage.setItem('randsPreRegistered', JSON.stringify(existing));
 
-        // Display PIN to user
         document.getElementById('generatedPIN').textContent = pin;
         document.getElementById('preRegisteredItems').textContent = itemsString;
         document.getElementById('preRegisterDisplay').classList.remove('hidden');
 
         showModal('Pre-registration complete', `✅ Pre-registration successful!\n\nYour PIN: ${pin}\n\nPlease present this PIN and your WhatsApp number at the counter.`);
 
-        // Reset form for next use
+        // Reset basket and form
         selectedItems = [];
         updateSelectedItemsDisplay();
         document.getElementById('preName').value = '';
         document.getElementById('prePhone').value = '';
     }
 
-    function openStaffDashboard() {
-        window.open('Rands-Vault.html', '_blank', 'width=1400,height=800');
+    // Staff: place back to wallet + redirect
+    function staffDashboardAndWalletRedirect() {
+        const preRegs = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
+        
+        localStorage.setItem('randsStaffWalletSnapshot', JSON.stringify({
+            preRegistrations: preRegs,
+            snapshotTime: new Date().toISOString(),
+            action: "view_and_place_back"
+        }));
+        
+        let walletHistory = JSON.parse(localStorage.getItem('randsWalletHistory') || '[]');
+        if (preRegs.length > 0) {
+            walletHistory.push({
+                id: Date.now(),
+                action: "staff_placed_to_wallet",
+                preRegCount: preRegs.length,
+                details: preRegs.map(p => ({ name: p.name, items: p.items, pin: p.pin })),
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('randsWalletHistory', JSON.stringify(walletHistory));
+            localStorage.setItem('walletRecentPlacement', 'true');
+        }
+        window.location.href = 'wallet.html';
     }
 
-    // Helper to escape HTML
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    function initStaffLink() {
+        const staffDiv = document.getElementById('staffWalletRedirectBtn');
+        if (staffDiv) {
+            staffDiv.addEventListener('click', (e) => {
+                e.preventDefault();
+                staffDashboardAndWalletRedirect();
+            });
+        }
     }
 
-    // Make functions globally accessible
+    // Expose globals
     window.addProduct = addProduct;
+    window.addProductFromModal = addProductFromModal;
     window.increaseQuantity = increaseQuantity;
     window.decreaseQuantity = decreaseQuantity;
     window.removeSelectedItem = removeSelectedItem;
     window.generatePreRegister = generatePreRegister;
-    window.openStaffDashboard = openStaffDashboard;
+    window.openProductModal = openProductModal;
+    window.closeProductModal = closeProductModal;
+    window.showModal = showModal;
+    window.closeModal = closeModal;
+    window.staffDashboardAndWalletRedirect = staffDashboardAndWalletRedirect;
 
-    // Initialise
-    renderProductGrid();
-    updateSelectedItemsDisplay();
+    document.addEventListener('DOMContentLoaded', () => {
+        const openBtn = document.getElementById('openProductModalBtn');
+        if (openBtn) openBtn.addEventListener('click', openProductModal);
+        
+        const productModal = document.getElementById('productPickerModal');
+        if (productModal) {
+            productModal.addEventListener('click', (e) => {
+                if (e.target === productModal) closeProductModal();
+            });
+        }
+        const alertModal = document.getElementById('customModal');
+        if (alertModal) {
+            alertModal.addEventListener('click', (e) => {
+                if (e.target === alertModal) closeModal();
+            });
+        }
+        updateSelectedItemsDisplay();
+        initStaffLink();
+    });
 </script>
 </body>
 </html>
