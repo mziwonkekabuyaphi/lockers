@@ -70,6 +70,15 @@
             display: block;
         }
 
+        /* Added spacing between form fields */
+        .form-field-spacing {
+            margin-bottom: 20px;
+        }
+
+        .form-field-spacing:last-of-type {
+            margin-bottom: 0;
+        }
+
         input, button {
             border-radius: 60px !important;
             border: 1px solid #ccc;
@@ -171,6 +180,13 @@
             margin-top: 20px;
             max-height: 300px;
             overflow-y: auto;
+            transition: all 0.2s ease;
+        }
+        /* Highlight animation for basket when item added */
+        .basket-highlight {
+            background: #e8f5e9;
+            box-shadow: 0 0 0 2px #4caf50, 0 0 0 4px rgba(76, 175, 80, 0.3);
+            transition: all 0.2s ease;
         }
 
         .selected-item-row {
@@ -182,6 +198,13 @@
             background: white;
             margin-bottom: 5px;
             border-radius: 40px;
+            transition: transform 0.15s ease, background-color 0.2s;
+        }
+        /* New item flash animation */
+        .item-flash {
+            background-color: #c8e6c9 !important;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
         }
 
         .selected-item-row:last-child {
@@ -248,7 +271,6 @@
             transform: scale(1.05);
         }
 
-        /* Info box with two lines */
         .info-box {
             background: #b71c1c;
             color: white;
@@ -270,8 +292,11 @@
         .info-description {
             font-size: 1rem;
             line-height: 1.4;
-            font-weight: 500;
+            font-weight: 400;
             margin-top: 4px;
+        }
+        .info-description strong {
+            font-weight: 700;
         }
 
         .pin-display {
@@ -324,10 +349,10 @@
             font-weight: 600;
         }
 
-        /* Simplified staff link */
+        /* Staff link - Back to wallet - RED */
         .staff-link {
-            background: #e3f2fd;
-            border-left: 5px solid #2196f3;
+            background: #c62828;
+            border-left: 5px solid #8e0000;
             padding: 14px 20px;
             border-radius: 60px;
             text-align: center;
@@ -339,11 +364,11 @@
             justify-content: center;
         }
         .staff-link:hover {
-            background: #d4e6f5;
+            background: #b71c1c;
             transform: translateY(-2px);
         }
         .staff-link a {
-            color: #b71c1c;
+            color: white;
             font-weight: bold;
             text-decoration: none;
             cursor: pointer;
@@ -421,6 +446,30 @@
             background: #5a6268 !important;
         }
 
+        /* Toast message animation */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #4caf50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 3000;
+            transition: transform 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         @media (max-width: 480px) {
             .product-modal-grid {
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -433,6 +482,11 @@
                 width: 28px;
                 height: 28px;
                 font-size: 16px;
+            }
+            .toast-notification {
+                font-size: 0.8rem;
+                white-space: nowrap;
+                padding: 8px 16px;
             }
         }
     </style>
@@ -447,11 +501,11 @@
 </header>
 
 <main>
-    <!-- Updated info-box: badge on its own line, description on new line below -->
+    <!-- Info box with badge and description -->
     <div class="info-box">
         <div class="security-badge">🔐 TWO‑FACTOR READY</div>
         <div class="info-description">
-            Pre‑register your items – you’ll receive a 5‑digit PIN. Complete locker assignment at Rands Smart Counter.
+            <strong>Pre‑register your items</strong> – you’ll receive a 5‑digit PIN. Complete locker assignment at Rands Smart Counter.
         </div>
     </div>
 
@@ -473,17 +527,22 @@
         </div>
     </div>
 
-    <!-- Customer details -->
+    <!-- Customer details - no prefilled values -->
     <div class="section">
         <h2>📋 2. Your details</h2>
-        <label for="preName">Full name</label>
-        <input type="text" id="preName" placeholder="e.g., Mziwonke KaBuyaphi" value="Mziwonke KaBuyaphi">
+        
+        <div class="form-field-spacing">
+            <label for="preName">Full name</label>
+            <input type="text" id="preName" placeholder="e.g., Mziwonke KaBuyaphi" value="">
+        </div>
 
-        <label for="prePhone">WhatsApp number (required for collection)</label>
-        <input type="tel" id="prePhone" placeholder="+27 82 123 4567" value="+27 82 123 4567">
-        <p style="font-size: 12px; color: #666; margin-top: 12px; margin-bottom: 0; padding-left: 4px;">
-            You will need this number together with your PIN to finalise locker assignment.
-        </p>
+        <div class="form-field-spacing">
+            <label for="prePhone">WhatsApp number</label>
+            <input type="tel" id="prePhone" placeholder="0635713652" value="">
+            <p style="font-size: 12px; color: #666; margin-top: 12px; margin-bottom: 0; padding-left: 4px;">
+                You will need this number together with your PIN to finalise locker assignment.
+            </p>
+        </div>
 
         <button onclick="generatePreRegister()" style="width: 100%; margin-top: 20px; background: #4caf50;">
             🔑 Generate PIN & Pre‑register
@@ -501,10 +560,10 @@
         </div>
     </div>
 
-    <!-- Simplified Staff Link: Only Wallet Access -->
+    <!-- Staff Link: "Back to wallet" - Red -->
     <div class="staff-link" id="staffWalletRedirectBtn">
         <a id="staffActionLink">
-            💰 <strong>Wallet Access</strong>
+            💰 <strong>Back to wallet</strong>
         </a>
     </div>
 
@@ -516,6 +575,9 @@
 <div class="footer">
     Created by <span>Mziwonke KaBuyaphi</span> | 🔐 Two‑Factor Security Ready
 </div>
+
+<!-- Toast notification for add item feedback -->
+<div id="toastMessage" class="toast-notification">✨ Item added to basket!</div>
 
 <!-- Modal for product selection -->
 <div id="productPickerModal" class="modal">
@@ -572,20 +634,86 @@
         });
     }
 
+    // Helper: Show toast animation
+    function showAddToast() {
+        const toast = document.getElementById('toastMessage');
+        if (!toast) return;
+        toast.classList.remove('show');
+        // Force reflow to restart animation
+        void toast.offsetWidth;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 1500);
+    }
+
+    // Animate basket container highlight
+    function animateBasket() {
+        const basketContainer = document.getElementById('selectedItemsContainer');
+        if (!basketContainer) return;
+        basketContainer.classList.add('basket-highlight');
+        setTimeout(() => {
+            basketContainer.classList.remove('basket-highlight');
+        }, 300);
+    }
+
+    // Flash a specific row when quantity increases or new item added
+    function flashRow(rowElement) {
+        if (!rowElement) return;
+        rowElement.classList.add('item-flash');
+        setTimeout(() => {
+            rowElement.classList.remove('item-flash');
+        }, 300);
+    }
+
     function addProduct(productName) {
-        const existing = selectedItems.find(i => i.name === productName);
-        if (existing) {
-            existing.quantity += 1;
+        const existingIndex = selectedItems.findIndex(i => i.name === productName);
+        let isNew = false;
+        let targetRowIndex = -1;
+        
+        if (existingIndex !== -1) {
+            // Increase quantity of existing item
+            selectedItems[existingIndex].quantity += 1;
+            targetRowIndex = existingIndex;
         } else {
+            // Add new item
             selectedItems.push({ name: productName, quantity: 1 });
+            isNew = true;
+            targetRowIndex = selectedItems.length - 1;
         }
+        
+        // Update display
         updateSelectedItemsDisplay();
+        
+        // Show toast notification
+        showAddToast();
+        
+        // Animate the basket background
+        animateBasket();
+        
+        // After a short delay (to ensure DOM updated), flash the specific row
+        setTimeout(() => {
+            if (targetRowIndex !== -1) {
+                const rows = document.querySelectorAll('.selected-item-row');
+                if (rows[targetRowIndex]) {
+                    flashRow(rows[targetRowIndex]);
+                }
+            }
+        }, 50);
     }
 
     function increaseQuantity(index) {
         if (selectedItems[index]) {
             selectedItems[index].quantity += 1;
             updateSelectedItemsDisplay();
+            // Flash the row for this item
+            setTimeout(() => {
+                const rows = document.querySelectorAll('.selected-item-row');
+                if (rows[index]) {
+                    flashRow(rows[index]);
+                }
+            }, 50);
+            animateBasket(); // subtle basket feedback
         }
     }
 
@@ -593,16 +721,39 @@
         if (selectedItems[index]) {
             if (selectedItems[index].quantity > 1) {
                 selectedItems[index].quantity -= 1;
+                updateSelectedItemsDisplay();
+                // Flash row after update to show change
+                setTimeout(() => {
+                    const rows = document.querySelectorAll('.selected-item-row');
+                    if (rows[index]) {
+                        flashRow(rows[index]);
+                    }
+                }, 50);
+                animateBasket();
             } else {
                 selectedItems.splice(index, 1);
+                updateSelectedItemsDisplay();
+                animateBasket();
             }
-            updateSelectedItemsDisplay();
         }
     }
 
     function removeSelectedItem(index) {
         selectedItems.splice(index, 1);
         updateSelectedItemsDisplay();
+        animateBasket();
+        // Show toast for removal? Optional but keep consistent
+        const toast = document.getElementById('toastMessage');
+        if (toast) {
+            toast.innerText = '🗑️ Item removed';
+            toast.classList.remove('show');
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.innerText = '✨ Item added to basket!'; // reset text
+            }, 1500);
+        }
     }
 
     function updateSelectedItemsDisplay() {
@@ -615,7 +766,7 @@
         let html = '';
         selectedItems.forEach((item, idx) => {
             html += `
-                <div class="selected-item-row">
+                <div class="selected-item-row" data-rowidx="${idx}">
                     <span class="item-name">${escapeHtml(item.name)}</span>
                     <div class="item-qty-controls">
                         <button class="qty-btn" onclick="decreaseQuantity(${idx})">−</button>
