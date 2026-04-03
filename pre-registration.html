@@ -70,7 +70,6 @@
             display: block;
         }
 
-        /* Added spacing between form fields */
         .form-field-spacing {
             margin-bottom: 20px;
         }
@@ -86,7 +85,7 @@
             outline: none;
         }
 
-        input[type="text"], input[type="tel"] {
+        input[type="text"], input[type="tel"], input[type="number"], input[type="password"] {
             width: 100%;
             padding: 14px 18px;
             background: #fafafa;
@@ -115,7 +114,6 @@
             transform: scale(0.98);
         }
 
-        /* ADD PRODUCT BUTTON */
         .add-product-main-btn {
             background: #4caf50;
             width: 100%;
@@ -182,7 +180,6 @@
             overflow-y: auto;
             transition: all 0.2s ease;
         }
-        /* Highlight animation for basket when item added */
         .basket-highlight {
             background: #e8f5e9;
             box-shadow: 0 0 0 2px #4caf50, 0 0 0 4px rgba(76, 175, 80, 0.3);
@@ -200,7 +197,6 @@
             border-radius: 40px;
             transition: transform 0.15s ease, background-color 0.2s;
         }
-        /* New item flash animation */
         .item-flash {
             background-color: #c8e6c9 !important;
             transform: scale(1.01);
@@ -349,7 +345,6 @@
             font-weight: 600;
         }
 
-        /* Staff link - Back to wallet - RED */
         .staff-link {
             background: #c62828;
             border-left: 5px solid #8e0000;
@@ -377,6 +372,44 @@
             justify-content: center;
             gap: 8px;
             font-size: 1.1rem;
+        }
+
+        /* Check Vault Balance Section */
+        .check-balance-section {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 6px solid #4caf50;
+        }
+        .balance-result {
+            background: #2c3e50;
+            color: #f1c40f;
+            padding: 20px;
+            border-radius: 28px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .balance-result-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        .balance-result-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        .items-details {
+            margin-top: 15px;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .items-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #eee;
+            padding: 6px 0;
         }
 
         /* Modal Styles */
@@ -446,7 +479,6 @@
             background: #5a6268 !important;
         }
 
-        /* Toast message animation */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -488,6 +520,9 @@
                 white-space: nowrap;
                 padding: 8px 16px;
             }
+            .balance-result-amount {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -501,7 +536,6 @@
 </header>
 
 <main>
-    <!-- Info box with badge and description -->
     <div class="info-box">
         <div class="security-badge">🔐 TWO‑FACTOR READY</div>
         <div class="info-description">
@@ -509,16 +543,11 @@
         </div>
     </div>
 
-    <!-- Item selection section -->
     <div class="section">
         <h2>🛒 1. Select your items</h2>
-
-        <!-- ADD PRODUCT button -->
         <button id="openProductModalBtn" class="add-product-main-btn">
             ➕ Add Product / Browse Items
         </button>
-
-        <!-- Basket -->
         <div class="selected-items" id="selectedItemsContainer">
             <h4>📦 Your basket (adjust quantities):</h4>
             <div id="selectedItemsList">
@@ -527,15 +556,12 @@
         </div>
     </div>
 
-    <!-- Customer details - no prefilled values -->
     <div class="section">
         <h2>📋 2. Your details</h2>
-        
         <div class="form-field-spacing">
             <label for="preName">Full name</label>
             <input type="text" id="preName" placeholder="e.g., Mziwonke KaBuyaphi" value="">
         </div>
-
         <div class="form-field-spacing">
             <label for="prePhone">WhatsApp number</label>
             <input type="tel" id="prePhone" placeholder="0635713652" value="">
@@ -543,13 +569,11 @@
                 You will need this number together with your PIN to finalise locker assignment.
             </p>
         </div>
-
         <button onclick="generatePreRegister()" style="width: 100%; margin-top: 20px; background: #4caf50;">
             🔑 Generate PIN & Pre‑register
         </button>
     </div>
 
-    <!-- PIN display -->
     <div id="preRegisterDisplay" class="pin-display hidden">
         <p>✅ Pre‑registration successful!</p>
         <p>Your 5‑digit PIN:</p>
@@ -560,11 +584,37 @@
         </div>
     </div>
 
-    <!-- Staff Link: "Back to wallet" - Red -->
+    <!-- NEW: Check Your Vault Balance Section - Customer facing -->
+    <div class="section check-balance-section">
+        <h2>🔍 Check Your Vault Balance</h2>
+        <p style="margin-bottom: 12px; color: #2e7d32;">Enter the phone number and PIN you received to view your stored items and total value.</p>
+        
+        <div class="form-field-spacing">
+            <label for="checkPhone">Phone Number</label>
+            <input type="tel" id="checkPhone" placeholder="e.g., 0635713652" value="">
+        </div>
+        
+        <div class="form-field-spacing">
+            <label for="checkPin">5-digit PIN</label>
+            <input type="password" id="checkPin" placeholder="Enter your 5-digit PIN" maxlength="5" inputmode="numeric">
+        </div>
+        
+        <button id="checkBalanceBtn" style="width: 100%; background: #4caf50;">🔍 Check My Balance</button>
+        
+        <div id="balanceResultContainer" style="display: none; margin-top: 20px;">
+            <div class="balance-result">
+                <div class="balance-result-label">YOUR VAULT VALUE</div>
+                <div class="balance-result-amount" id="customerBalanceAmount">R 0.00</div>
+            </div>
+            <div class="items-details" id="customerItemsList">
+                <p style="color: #666;">Your items will appear here...</p>
+            </div>
+            <button id="clearResultBtn" style="background: #6c757d; margin-top: 12px; width: auto; padding: 8px 20px;">Clear</button>
+        </div>
+    </div>
+
     <div class="staff-link" id="staffWalletRedirectBtn">
-        <a id="staffActionLink">
-            💰 <strong>Back to wallet</strong>
-        </a>
+        <a id="staffActionLink">💰 <strong>Back to wallet</strong></a>
     </div>
 
     <div class="small-note">
@@ -576,336 +626,202 @@
     Created by <span>Mziwonke KaBuyaphi</span> | 🔐 Two‑Factor Security Ready
 </div>
 
-<!-- Toast notification for add item feedback -->
 <div id="toastMessage" class="toast-notification">✨ Item added to basket!</div>
-
-<!-- Modal for product selection -->
-<div id="productPickerModal" class="modal">
-    <div class="modal-content">
-        <h3>📦 Select Products</h3>
-        <p style="margin-bottom: 8px;">Click on any item to add it to your basket</p>
-        <div id="productModalGrid" class="product-modal-grid"></div>
-        <button class="close-modal-btn" onclick="closeProductModal()">Close</button>
-    </div>
-</div>
-
-<!-- Alert modal -->
-<div id="customModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle">Notice</h3>
-        <p id="modalMessage">Message goes here</p>
-        <button onclick="closeModal()">OK</button>
-    </div>
-</div>
+<div id="productPickerModal" class="modal"><div class="modal-content"><h3>📦 Select Products</h3><p>Click on any item to add it to your basket</p><div id="productModalGrid" class="product-modal-grid"></div><button class="close-modal-btn" onclick="closeProductModal()">Close</button></div></div>
+<div id="customModal" class="modal"><div class="modal-content"><h3 id="modalTitle">Notice</h3><p id="modalMessage">Message goes here</p><button onclick="closeModal()">OK</button></div></div>
 
 <script>
-    // Product list
-    const products = [
-        "Heineken Beer 6-pack",
-        "Castle Lager 6-pack",
-        "Black Label 6-pack",
-        "Jameson Whiskey 750ml",
-        "Jack Daniels 750ml",
-        "Johnnie Walker Black 12yr",
-        "Smirnoff Vodka 1L",
-        "Absolut Vodka 1L",
-        "Gordon's Gin 1L",
-        "Bombay Sapphire 1L",
-        "Captain Morgan Rum 1L",
-        "Bacardi Rum 1L",
-        "Amarula Cream 750ml",
-        "Jägermeister 700ml",
-        "Savanna Dry 6-pack",
-        "Hunters Dry 6-pack",
-        "Red Wine (Robertson)",
-        "White Wine (Robertson)",
-        "Champagne (Moet)",
-        "Prosecco"
-    ];
+    // Product list with values
+    const productsWithValues = {
+        "Heineken Beer 6-pack": 89.99, "Castle Lager 6-pack": 79.99, "Black Label 6-pack": 79.99,
+        "Jameson Whiskey 750ml": 329.99, "Jack Daniels 750ml": 399.99, "Johnnie Walker Black 12yr": 499.99,
+        "Smirnoff Vodka 1L": 189.99, "Absolut Vodka 1L": 219.99, "Gordon's Gin 1L": 199.99,
+        "Bombay Sapphire 1L": 279.99, "Captain Morgan Rum 1L": 219.99, "Bacardi Rum 1L": 209.99,
+        "Amarula Cream 750ml": 159.99, "Jägermeister 700ml": 249.99, "Savanna Dry 6-pack": 99.99,
+        "Hunters Dry 6-pack": 99.99, "Red Wine (Robertson)": 89.99, "White Wine (Robertson)": 89.99,
+        "Champagne (Moet)": 549.99, "Prosecco": 149.99
+    };
 
     let selectedItems = [];
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    
+    function showToast(message = "✨ Item added to basket!") { 
+        const toast = document.getElementById('toastMessage'); 
+        if (!toast) return; 
+        toast.innerText = message; 
+        toast.classList.remove('show'); 
+        void toast.offsetWidth; 
+        toast.classList.add('show'); 
+        setTimeout(() => { 
+            toast.classList.remove('show'); 
+            toast.innerText = "✨ Item added to basket!"; 
+        }, 1500); 
     }
-
-    // Helper: Show toast animation
-    function showAddToast() {
-        const toast = document.getElementById('toastMessage');
-        if (!toast) return;
-        toast.classList.remove('show');
-        // Force reflow to restart animation
-        void toast.offsetWidth;
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 1500);
+    
+    function animateBasket() { 
+        const basketContainer = document.getElementById('selectedItemsContainer'); 
+        if (!basketContainer) return; 
+        basketContainer.classList.add('basket-highlight'); 
+        setTimeout(() => { basketContainer.classList.remove('basket-highlight'); }, 300); 
     }
-
-    // Animate basket container highlight
-    function animateBasket() {
-        const basketContainer = document.getElementById('selectedItemsContainer');
-        if (!basketContainer) return;
-        basketContainer.classList.add('basket-highlight');
-        setTimeout(() => {
-            basketContainer.classList.remove('basket-highlight');
-        }, 300);
-    }
-
-    // Flash a specific row when quantity increases or new item added
-    function flashRow(rowElement) {
-        if (!rowElement) return;
-        rowElement.classList.add('item-flash');
-        setTimeout(() => {
-            rowElement.classList.remove('item-flash');
-        }, 300);
+    
+    function flashRow(rowElement) { 
+        if (!rowElement) return; 
+        rowElement.classList.add('item-flash'); 
+        setTimeout(() => { rowElement.classList.remove('item-flash'); }, 300); 
     }
 
     function addProduct(productName) {
         const existingIndex = selectedItems.findIndex(i => i.name === productName);
-        let isNew = false;
         let targetRowIndex = -1;
-        
-        if (existingIndex !== -1) {
-            // Increase quantity of existing item
-            selectedItems[existingIndex].quantity += 1;
-            targetRowIndex = existingIndex;
-        } else {
-            // Add new item
-            selectedItems.push({ name: productName, quantity: 1 });
-            isNew = true;
-            targetRowIndex = selectedItems.length - 1;
-        }
-        
-        // Update display
+        if (existingIndex !== -1) { selectedItems[existingIndex].quantity += 1; targetRowIndex = existingIndex; }
+        else { selectedItems.push({ name: productName, quantity: 1 }); targetRowIndex = selectedItems.length - 1; }
         updateSelectedItemsDisplay();
-        
-        // Show toast notification
-        showAddToast();
-        
-        // Animate the basket background
+        showToast(`➕ Added ${productName}`);
         animateBasket();
-        
-        // After a short delay (to ensure DOM updated), flash the specific row
-        setTimeout(() => {
-            if (targetRowIndex !== -1) {
-                const rows = document.querySelectorAll('.selected-item-row');
-                if (rows[targetRowIndex]) {
-                    flashRow(rows[targetRowIndex]);
-                }
-            }
-        }, 50);
+        setTimeout(() => { const rows = document.querySelectorAll('.selected-item-row'); if (rows[targetRowIndex]) flashRow(rows[targetRowIndex]); }, 50);
     }
-
-    function increaseQuantity(index) {
-        if (selectedItems[index]) {
-            selectedItems[index].quantity += 1;
-            updateSelectedItemsDisplay();
-            // Flash the row for this item
-            setTimeout(() => {
-                const rows = document.querySelectorAll('.selected-item-row');
-                if (rows[index]) {
-                    flashRow(rows[index]);
-                }
-            }, 50);
-            animateBasket(); // subtle basket feedback
-        }
-    }
-
-    function decreaseQuantity(index) {
-        if (selectedItems[index]) {
-            if (selectedItems[index].quantity > 1) {
-                selectedItems[index].quantity -= 1;
-                updateSelectedItemsDisplay();
-                // Flash row after update to show change
-                setTimeout(() => {
-                    const rows = document.querySelectorAll('.selected-item-row');
-                    if (rows[index]) {
-                        flashRow(rows[index]);
-                    }
-                }, 50);
-                animateBasket();
-            } else {
-                selectedItems.splice(index, 1);
-                updateSelectedItemsDisplay();
-                animateBasket();
-            }
-        }
-    }
-
-    function removeSelectedItem(index) {
-        selectedItems.splice(index, 1);
-        updateSelectedItemsDisplay();
-        animateBasket();
-        // Show toast for removal? Optional but keep consistent
-        const toast = document.getElementById('toastMessage');
-        if (toast) {
-            toast.innerText = '🗑️ Item removed';
-            toast.classList.remove('show');
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-                toast.innerText = '✨ Item added to basket!'; // reset text
-            }, 1500);
-        }
-    }
-
+    
+    function increaseQuantity(index) { if (selectedItems[index]) { selectedItems[index].quantity += 1; updateSelectedItemsDisplay(); setTimeout(() => { const rows = document.querySelectorAll('.selected-item-row'); if (rows[index]) flashRow(rows[index]); }, 50); animateBasket(); } }
+    function decreaseQuantity(index) { if (selectedItems[index]) { if (selectedItems[index].quantity > 1) { selectedItems[index].quantity -= 1; updateSelectedItemsDisplay(); setTimeout(() => { const rows = document.querySelectorAll('.selected-item-row'); if (rows[index]) flashRow(rows[index]); }, 50); animateBasket(); } else { selectedItems.splice(index, 1); updateSelectedItemsDisplay(); animateBasket(); showToast("🗑️ Item removed"); } } }
+    function removeSelectedItem(index) { selectedItems.splice(index, 1); updateSelectedItemsDisplay(); animateBasket(); showToast("🗑️ Item removed"); }
+    
     function updateSelectedItemsDisplay() {
         const container = document.getElementById('selectedItemsList');
         if (!container) return;
-        if (selectedItems.length === 0) {
-            container.innerHTML = '<p style="color: #999; text-align: center;">No items selected yet</p>';
-            return;
-        }
+        if (selectedItems.length === 0) { container.innerHTML = '<p style="color: #999; text-align: center;">No items selected yet</p>'; return; }
         let html = '';
-        selectedItems.forEach((item, idx) => {
-            html += `
-                <div class="selected-item-row" data-rowidx="${idx}">
-                    <span class="item-name">${escapeHtml(item.name)}</span>
-                    <div class="item-qty-controls">
-                        <button class="qty-btn" onclick="decreaseQuantity(${idx})">−</button>
-                        <span class="qty-display">${item.quantity}</span>
-                        <button class="qty-btn" onclick="increaseQuantity(${idx})">+</button>
-                    </div>
-                    <div class="remove-item" onclick="removeSelectedItem(${idx})">✖</div>
-                </div>
-            `;
-        });
+        selectedItems.forEach((item, idx) => { html += `<div class="selected-item-row"><span class="item-name">${escapeHtml(item.name)}</span><div class="item-qty-controls"><button class="qty-btn" onclick="decreaseQuantity(${idx})">−</button><span class="qty-display">${item.quantity}</span><button class="qty-btn" onclick="increaseQuantity(${idx})">+</button></div><div class="remove-item" onclick="removeSelectedItem(${idx})">✖</div></div>`; });
         container.innerHTML = html;
     }
 
-    // Product Modal
-    function openProductModal() {
-        const modal = document.getElementById('productPickerModal');
-        const gridContainer = document.getElementById('productModalGrid');
-        if (!gridContainer) return;
-        gridContainer.innerHTML = '';
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="product-name">${escapeHtml(product)}</div>
-                <button class="add-product-btn" onclick="addProductFromModal('${escapeHtml(product)}')">➕ Add</button>
-            `;
-            gridContainer.appendChild(card);
-        });
-        modal.style.display = 'flex';
+    // Calculate total value for a registration
+    function calculateRegistrationValue(itemsString) {
+        let total = 0;
+        const itemsParts = itemsString.split(',');
+        for (let part of itemsParts) {
+            const match = part.match(/(.+?)\s*x(\d+)/);
+            if (match) {
+                const productName = match[1].trim();
+                const qty = parseInt(match[2], 10);
+                const price = productsWithValues[productName] || 0;
+                total += price * qty;
+            }
+        }
+        return total;
     }
 
-    function addProductFromModal(productName) {
-        addProduct(productName);
+    // Check customer balance by phone and PIN
+    function checkCustomerBalance() {
+        const phone = document.getElementById('checkPhone').value.trim();
+        const pin = document.getElementById('checkPin').value.trim();
+        
+        if (!phone) {
+            showModal("Missing Info", "Please enter your phone number.");
+            return;
+        }
+        if (!pin) {
+            showModal("Missing Info", "Please enter your 5-digit PIN.");
+            return;
+        }
+        if (pin.length !== 5 || !/^\d+$/.test(pin)) {
+            showModal("Invalid PIN", "PIN must be exactly 5 digits.");
+            return;
+        }
+        
+        // Search in pre-registrations
+        const preRegistrations = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
+        const found = preRegistrations.find(reg => reg.phone === phone && reg.pin === pin);
+        
+        const resultContainer = document.getElementById('balanceResultContainer');
+        const balanceAmountSpan = document.getElementById('customerBalanceAmount');
+        const itemsListDiv = document.getElementById('customerItemsList');
+        
+        if (found) {
+            const totalValue = calculateRegistrationValue(found.items);
+            balanceAmountSpan.textContent = `R ${totalValue.toFixed(2)}`;
+            
+            // Display items nicely
+            let itemsHtml = `<p style="font-weight: 600; margin-bottom: 8px;">📦 Your stored items:</p>`;
+            const itemsParts = found.items.split(',');
+            for (let part of itemsParts) {
+                const match = part.match(/(.+?)\s*x(\d+)/);
+                if (match) {
+                    const productName = match[1].trim();
+                    const qty = match[2];
+                    const price = productsWithValues[productName] || 0;
+                    const itemTotal = price * parseInt(qty, 10);
+                    itemsHtml += `<p>• ${productName} x${qty} — R ${itemTotal.toFixed(2)}</p>`;
+                }
+            }
+            itemsHtml += `<p style="margin-top: 10px; font-size: 12px; color: #666;">Status: ${found.status || "Pre-registered"} | Registered: ${new Date(found.timestamp).toLocaleDateString()}</p>`;
+            itemsListDiv.innerHTML = itemsHtml;
+            resultContainer.style.display = 'block';
+            showToast("✅ Balance found!");
+        } else {
+            showModal("Not Found", "No pre-registration found with the provided phone number and PIN. Please check your details or complete a pre-registration first.");
+            resultContainer.style.display = 'none';
+        }
     }
-
-    function closeProductModal() {
-        document.getElementById('productPickerModal').style.display = 'none';
+    
+    function clearBalanceResult() {
+        document.getElementById('balanceResultContainer').style.display = 'none';
+        document.getElementById('checkPhone').value = '';
+        document.getElementById('checkPin').value = '';
+        showToast("Cleared");
     }
 
     // Pre-registration
-    function generateRandomPIN() {
-        return Math.floor(10000 + Math.random() * 90000).toString();
-    }
-
-    function showModal(title, message) {
-        document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerHTML = message;
-        document.getElementById('customModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('customModal').style.display = 'none';
-    }
-
+    function generateRandomPIN() { return Math.floor(10000 + Math.random() * 90000).toString(); }
+    function showModal(title, message) { document.getElementById('modalTitle').innerText = title; document.getElementById('modalMessage').innerHTML = message; document.getElementById('customModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
+    
     function generatePreRegister() {
-        const name = document.getElementById('preName').value.trim();
+        const name = document.getElementById('preName').value.trim(); 
         const phone = document.getElementById('prePhone').value.trim();
-
-        if (!name) {
-            showModal('Missing name', 'Please enter your name.');
-            return;
-        }
-        if (!phone) {
-            showModal('Missing phone', 'Please enter your WhatsApp number.');
-            return;
-        }
-        if (!phone.match(/^[\+]?[0-9\s\-\(\)]{10,}$/)) {
-            showModal('Invalid phone', 'Please enter a valid phone number (including country code).');
-            return;
-        }
-        if (selectedItems.length === 0) {
-            showModal('No items', 'Please select at least one item to store.');
-            return;
-        }
-
-        const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', ');
+        if (!name) { showModal('Missing name', 'Please enter your name.'); return; }
+        if (!phone) { showModal('Missing phone', 'Please enter your WhatsApp number.'); return; }
+        if (!phone.match(/^[\+]?[0-9\s\-\(\)]{10,}$/)) { showModal('Invalid phone', 'Please enter a valid phone number.'); return; }
+        if (selectedItems.length === 0) { showModal('No items', 'Please select at least one item to store.'); return; }
+        
+        const itemsString = selectedItems.map(i => `${i.name} x${i.quantity}`).join(', '); 
         const pin = generateRandomPIN();
-
-        const preReg = {
-            id: Date.now(),
-            name: name,
-            phone: phone,
-            items: itemsString,
-            pin: pin,
-            status: "Pre-registered",
-            timestamp: new Date().toISOString()
-        };
-
-        const existing = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
-        existing.push(preReg);
+        const preReg = { id: Date.now(), name, phone, items: itemsString, pin, status: "Pre-registered", timestamp: new Date().toISOString() };
+        const existing = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]'); 
+        existing.push(preReg); 
         localStorage.setItem('randsPreRegistered', JSON.stringify(existing));
-
-        document.getElementById('generatedPIN').textContent = pin;
-        document.getElementById('preRegisteredItems').textContent = itemsString;
+        
+        document.getElementById('generatedPIN').textContent = pin; 
+        document.getElementById('preRegisteredItems').textContent = itemsString; 
         document.getElementById('preRegisterDisplay').classList.remove('hidden');
-
-        showModal('Pre-registration complete', `✅ Pre-registration successful!\n\nYour PIN: ${pin}\n\nPlease present this PIN and your WhatsApp number at the counter.`);
-
-        // Reset basket and form
-        selectedItems = [];
-        updateSelectedItemsDisplay();
-        document.getElementById('preName').value = '';
+        showModal('Pre-registration complete', `✅ Pre-registration successful!\n\nYour PIN: ${pin}\n\nPlease present this PIN and your WhatsApp number at the counter.\n\nTotal Value: R ${calculateRegistrationValue(itemsString).toFixed(2)}`);
+        
+        selectedItems = []; 
+        updateSelectedItemsDisplay(); 
+        document.getElementById('preName').value = ''; 
         document.getElementById('prePhone').value = '';
     }
+    
+    function staffDashboardAndWalletRedirect() { window.location.href = 'wallet.html'; }
+    function initStaffLink() { const staffDiv = document.getElementById('staffWalletRedirectBtn'); if (staffDiv) staffDiv.addEventListener('click', (e) => { e.preventDefault(); staffDashboardAndWalletRedirect(); }); }
 
-    // Staff: place back to wallet + redirect
-    function staffDashboardAndWalletRedirect() {
-        const preRegs = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
-        
-        localStorage.setItem('randsStaffWalletSnapshot', JSON.stringify({
-            preRegistrations: preRegs,
-            snapshotTime: new Date().toISOString(),
-            action: "view_and_place_back"
-        }));
-        
-        let walletHistory = JSON.parse(localStorage.getItem('randsWalletHistory') || '[]');
-        if (preRegs.length > 0) {
-            walletHistory.push({
-                id: Date.now(),
-                action: "staff_placed_to_wallet",
-                preRegCount: preRegs.length,
-                details: preRegs.map(p => ({ name: p.name, items: p.items, pin: p.pin })),
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('randsWalletHistory', JSON.stringify(walletHistory));
-            localStorage.setItem('walletRecentPlacement', 'true');
-        }
-        window.location.href = 'wallet.html';
+    // Product Modal
+    function openProductModal() { 
+        const modal = document.getElementById('productPickerModal'); 
+        const gridContainer = document.getElementById('productModalGrid'); 
+        if (!gridContainer) return; 
+        gridContainer.innerHTML = ''; 
+        for (let product of Object.keys(productsWithValues)) { 
+            const card = document.createElement('div'); 
+            card.className = 'product-card'; 
+            card.innerHTML = `<div class="product-name">${escapeHtml(product)}</div><button class="add-product-btn" onclick="addProductFromModal('${escapeHtml(product)}')">➕ Add</button>`; 
+            gridContainer.appendChild(card); 
+        } 
+        modal.style.display = 'flex'; 
     }
-
-    function initStaffLink() {
-        const staffDiv = document.getElementById('staffWalletRedirectBtn');
-        if (staffDiv) {
-            staffDiv.addEventListener('click', (e) => {
-                e.preventDefault();
-                staffDashboardAndWalletRedirect();
-            });
-        }
-    }
+    function addProductFromModal(productName) { addProduct(productName); }
+    function closeProductModal() { document.getElementById('productPickerModal').style.display = 'none'; }
 
     // Expose globals
     window.addProduct = addProduct;
@@ -919,23 +835,15 @@
     window.showModal = showModal;
     window.closeModal = closeModal;
     window.staffDashboardAndWalletRedirect = staffDashboardAndWalletRedirect;
+    window.checkCustomerBalance = checkCustomerBalance;
+    window.clearBalanceResult = clearBalanceResult;
 
     document.addEventListener('DOMContentLoaded', () => {
-        const openBtn = document.getElementById('openProductModalBtn');
-        if (openBtn) openBtn.addEventListener('click', openProductModal);
-        
-        const productModal = document.getElementById('productPickerModal');
-        if (productModal) {
-            productModal.addEventListener('click', (e) => {
-                if (e.target === productModal) closeProductModal();
-            });
-        }
-        const alertModal = document.getElementById('customModal');
-        if (alertModal) {
-            alertModal.addEventListener('click', (e) => {
-                if (e.target === alertModal) closeModal();
-            });
-        }
+        document.getElementById('openProductModalBtn').addEventListener('click', openProductModal);
+        document.getElementById('checkBalanceBtn').addEventListener('click', checkCustomerBalance);
+        document.getElementById('clearResultBtn').addEventListener('click', clearBalanceResult);
+        document.getElementById('productPickerModal').addEventListener('click', (e) => { if (e.target === document.getElementById('productPickerModal')) closeProductModal(); });
+        document.getElementById('customModal').addEventListener('click', (e) => { if (e.target === document.getElementById('customModal')) closeModal(); });
         updateSelectedItemsDisplay();
         initStaffLink();
     });
