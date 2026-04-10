@@ -16,26 +16,7 @@
             background: #f5f5f5;
             color: #1e1e1e;
             padding-bottom: 24px;
-        }
-
-        header {
-            background: #c62828;
-            color: white;
-            padding: 18px 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .header-title h1 {
-            font-size: 26px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .header-title p {
-            font-size: 15px;
-            opacity: 0.95;
-            margin-top: 6px;
+            padding-top: 16px;
         }
 
         main {
@@ -273,6 +254,7 @@
             padding: 18px;
             border-radius: 28px;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .security-badge {
@@ -290,9 +272,35 @@
             line-height: 1.4;
             font-weight: 400;
             margin-top: 4px;
+            padding-right: 50px;
         }
         .info-description strong {
             font-weight: 700;
+        }
+
+        /* Back button positioned inside the info card */
+        .back-btn-inside {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .back-btn-inside:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.4);
         }
 
         .small-note {
@@ -316,35 +324,6 @@
         .footer span {
             color: #b71c1c;
             font-weight: 600;
-        }
-
-        .staff-link {
-            background: #c62828;
-            border-left: 5px solid #8e0000;
-            padding: 14px 20px;
-            border-radius: 60px;
-            text-align: center;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .staff-link:hover {
-            background: #b71c1c;
-            transform: translateY(-2px);
-        }
-        .staff-link a {
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 1.1rem;
         }
 
         /* PIN Input Group */
@@ -474,24 +453,29 @@
             .pin-input-group input, .pin-input-group button {
                 width: 100%;
             }
+            .info-description {
+                padding-right: 40px;
+            }
+            .back-btn-inside {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                top: 12px;
+                right: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-title">
-        <h1>Rands Locker</h1>
-        <p>Secure your items – create your own PIN for later collection</p>
-    </div>
-</header>
-
 <main>
+    <!-- Info Box with Back Button Inside (Top Right Corner) -->
     <div class="info-box">
         <div class="security-badge">🔐 TWO‑FACTOR READY</div>
         <div class="info-description">
             <strong>Pre‑register your items</strong> – you'll create your own 4-6 digit PIN. Complete locker assignment at Rands Smart Counter.
         </div>
+        <button class="back-btn-inside" onclick="window.location.href='booze-locker.html'">✕</button>
     </div>
 
     <!-- SECTION 1: Select items to add -->
@@ -532,12 +516,8 @@
             <p class="pin-hint">🔐 Choose a 4-6 digit PIN that you will remember. You'll need this to access your items.</p>
         </div>
         <button onclick="createNewVault()" style="width: 100%; margin-top: 20px; background: #4caf50;">
-            🔑 Create New Vault & Pre-register
+            🔑 Unlock a New Vault
         </button>
-    </div>
-
-    <div class="staff-link" id="staffWalletRedirectBtn">
-        <a id="staffActionLink">💰 <strong>Back to wallet</strong></a>
     </div>
 
     <div class="small-note">
@@ -686,7 +666,6 @@
     function closeModal() { document.getElementById('customModal').style.display = 'none'; }
     
     function staffDashboardAndWalletRedirect() { window.location.href = 'wallet.html'; }
-    function initStaffLink() { const staffDiv = document.getElementById('staffWalletRedirectBtn'); if (staffDiv) staffDiv.addEventListener('click', (e) => { e.preventDefault(); staffDashboardAndWalletRedirect(); }); }
 
     // Product Modal
     function openProductModal() { 
@@ -723,7 +702,6 @@
         document.getElementById('productPickerModal').addEventListener('click', (e) => { if (e.target === document.getElementById('productPickerModal')) closeProductModal(); });
         document.getElementById('customModal').addEventListener('click', (e) => { if (e.target === document.getElementById('customModal')) closeModal(); });
         updateSelectedItemsDisplay();
-        initStaffLink();
     });
 </script>
 </body>
