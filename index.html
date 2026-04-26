@@ -309,6 +309,20 @@
             background: #fff8e1;
             border-left: 6px solid #ff9800;
         }
+        .current-items-display {
+            background: #e8f5e9;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .current-items-display p {
+            margin: 8px 0;
+            font-size: 14px;
+            padding: 4px 0;
+        }
+        .current-items-display strong {
+            color: #2e7d32;
+        }
         .success-badge {
             background: #e8f5e8;
             padding: 15px;
@@ -375,7 +389,7 @@
         <button class="close-vault-btn" onclick="closeMyBoozeVault()">✕</button>
     </div>
 
-    <!-- SECTION 3: Your Vault Balance -->
+    <!-- SECTION: Your Vault Balance -->
     <div class="my-vault-section">
         <h2>💰 Your Vault Balance</h2>
         <p style="margin-bottom: 12px; color: #2e7d32;">Enter your phone number and PIN to view your stored items and total value.</p>
@@ -404,36 +418,28 @@
         </div>
     </div>
 
-    <!-- SECTION 4: Your vault - Add more items -->
-    <div class="my-vault-section add-more-section">
-        <h2>📦 Add More Items to Your Vault</h2>
-        <p style="margin-bottom: 16px; color: #e65100;">Enter your phone number and PIN to add more items to your existing vault.</p>
-        
-        <div style="margin-bottom: 20px;">
-            <label for="addMorePhone">Phone Number</label>
-            <input type="tel" id="addMorePhone" placeholder="e.g., 0635713652" value="">
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="addMorePin">Your PIN</label>
-            <input type="password" id="addMorePin" placeholder="Enter your 4-6 digit PIN" maxlength="6" inputmode="numeric">
-        </div>
-        <button id="accessAddMoreVaultBtn" style="background: #ff9800;">🔓 Access My Vault</button>
-        
-        <div id="addMoreVaultInfo" style="display: none; margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 20px;">
-            <p><strong>✅ Vault accessed!</strong> Your current items are shown below. Use the "Add Items" button above to add more.</p>
-            <div id="addMoreItemsList" style="margin-top: 10px; font-size: 14px;"></div>
-        </div>
-    </div>
+    <!-- SECTION: Add More Items (HIDDEN until balance is checked - Simplified without phone/PIN fields) -->
+    <div id="addMoreItemsSection" style="display: none;">
+        <div class="my-vault-section add-more-section">
+            <h2>📦 Add More Items</h2>
+            
+            <!-- Current items display (no extra text, just the items) -->
+            <div id="currentItemsDisplay" class="current-items-display" style="display: none;">
+                <!-- Current items will be injected here -->
+            </div>
 
-    <!-- Item selection for adding more -->
-    <div class="my-vault-section">
-        <h2>🛒 Select Items to Add</h2>
-        <div id="addMoreProductGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;"></div>
-        <div class="selected-items" style="background: #f0f0f0; padding: 15px; border-radius: 20px; margin-top: 20px; max-height: 250px; overflow-y: auto;">
-            <h4>📦 Items to add:</h4>
-            <div id="addMoreSelectedList"><p style="color: #999; text-align: center;">No items selected yet</p></div>
+            <!-- Item selection grid -->
+            <div style="margin-top: 20px;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 12px; color: #e65100;">🛒 Select Items to Add</h3>
+                <div id="addMoreProductGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;"></div>
+            </div>
+            
+            <div class="selected-items" style="background: #f0f0f0; padding: 15px; border-radius: 20px; margin-top: 20px; max-height: 250px; overflow-y: auto;">
+                <h4>📦 Items to add:</h4>
+                <div id="addMoreSelectedList"><p style="color: #999; text-align: center;">No items selected yet</p></div>
+            </div>
+            <button id="confirmAddToVaultBtn" style="margin-top: 15px; background: #4caf50; display: none;">➕ Add Selected Items to My Vault</button>
         </div>
-        <button id="confirmAddToVaultBtn" style="margin-top: 15px; background: #4caf50; display: none;">➕ Add Selected Items to My Vault</button>
     </div>
 </div>
 
@@ -447,19 +453,45 @@
 </div>
 
 <script>
-    // Product list with values
-    const productsWithValues = {
-        "Heineken Beer 6-pack": 89.99, "Castle Lager 6-pack": 79.99, "Black Label 6-pack": 79.99,
-        "Jameson Whiskey 750ml": 329.99, "Jack Daniels 750ml": 399.99, "Johnnie Walker Black 12yr": 499.99,
-        "Smirnoff Vodka 1L": 189.99, "Absolut Vodka 1L": 219.99, "Gordon's Gin 1L": 199.99,
-        "Bombay Sapphire 1L": 279.99, "Captain Morgan Rum 1L": 219.99, "Bacardi Rum 1L": 209.99,
-        "Amarula Cream 750ml": 159.99, "Jägermeister 700ml": 249.99, "Savanna Dry 6-pack": 99.99,
-        "Hunters Dry 6-pack": 99.99, "Red Wine (Robertson)": 89.99, "White Wine (Robertson)": 89.99,
-        "Champagne (Moet)": 549.99, "Prosecco": 149.99
-    };
+    // ========== LOAD PRODUCTS FROM ADMIN INVENTORY ==========
+    let productsWithValues = {};
+    let currentVerifiedVault = null;
+
+    function loadProductsFromAdminInventory() {
+        const storedInventory = localStorage.getItem('rands_inventory_items');
+        if (storedInventory && JSON.parse(storedInventory).length > 0) {
+            const inventory = JSON.parse(storedInventory);
+            productsWithValues = {};
+            inventory.forEach(item => {
+                productsWithValues[item.name] = item.price;
+            });
+            console.log('✅ Products loaded from Admin Inventory:', Object.keys(productsWithValues).length);
+            return true;
+        } else {
+            productsWithValues = {
+                "Heineken Beer 6-pack": 89.99, "Castle Lager 6-pack": 79.99, "Black Label 6-pack": 79.99,
+                "Jameson Whiskey 750ml": 329.99, "Jack Daniels 750ml": 399.99, "Johnnie Walker Black 12yr": 499.99,
+                "Smirnoff Vodka 1L": 189.99, "Absolut Vodka 1L": 219.99, "Gordon's Gin 1L": 199.99,
+                "Bombay Sapphire 1L": 279.99, "Captain Morgan Rum 1L": 219.99, "Bacardi Rum 1L": 209.99,
+                "Amarula Cream 750ml": 159.99, "Jägermeister 700ml": 249.99, "Savanna Dry 6-pack": 99.99,
+                "Hunters Dry 6-pack": 99.99, "Red Wine (Robertson)": 89.99, "White Wine (Robertson)": 89.99,
+                "Champagne (Moet)": 549.99, "Prosecco": 149.99
+            };
+            console.log('📦 Using default products');
+            return false;
+        }
+    }
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'rands_inventory_items') {
+            loadProductsFromAdminInventory();
+            if (document.getElementById('myBoozeVaultContainer').style.display === 'block' && currentVerifiedVault) {
+                renderAddMoreProductGrid();
+            }
+        }
+    });
 
     let addMoreSelectedItems = [];
-    let currentAddMoreVault = null;
 
     function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
@@ -470,23 +502,30 @@
     }
     function closeModal() { document.getElementById('customModal').style.display = 'none'; }
 
-    // Navigation functions
     function goToKeep() { window.location.href = 'pre-registration.html'; }
     function goToCollect() { window.location.href = 'customer-unlock-vault.html'; }
     function goToWallet() { window.location.href = 'wallet.html'; }
-    function openMyBoozeVault() { document.getElementById('myBoozeVaultContainer').style.display = 'block'; }
+    
+    function openMyBoozeVault() { 
+        loadProductsFromAdminInventory();
+        document.getElementById('addMoreItemsSection').style.display = 'none';
+        currentVerifiedVault = null;
+        addMoreSelectedItems = [];
+        updateAddMoreSelectedDisplay();
+        document.getElementById('vaultBalanceResult').style.display = 'none';
+        document.getElementById('vaultPhone').value = '';
+        document.getElementById('vaultPin').value = '';
+        document.getElementById('confirmAddToVaultBtn').style.display = 'none';
+        document.getElementById('myBoozeVaultContainer').style.display = 'block'; 
+    }
+    
     function closeMyBoozeVault() { 
         document.getElementById('myBoozeVaultContainer').style.display = 'none';
-        // Reset states
         addMoreSelectedItems = [];
-        currentAddMoreVault = null;
+        currentVerifiedVault = null;
         updateAddMoreSelectedDisplay();
-        document.getElementById('addMoreVaultInfo').style.display = 'none';
-        document.getElementById('confirmAddToVaultBtn').style.display = 'none';
-        document.getElementById('vaultBalanceResult').style.display = 'none';
     }
 
-    // Calculate total value
     function calculateRegistrationValue(itemsString) {
         let total = 0;
         const itemsParts = itemsString.split(',');
@@ -513,7 +552,7 @@
         return items;
     }
 
-    // SECTION 3: Check Vault Balance
+    // SECTION: Check Vault Balance - SHOWS Add More section AFTER successful verification
     function checkVaultBalance() {
         const phone = document.getElementById('vaultPhone').value.trim();
         const pin = document.getElementById('vaultPin').value.trim();
@@ -530,6 +569,8 @@
         const itemsListDiv = document.getElementById('vaultItemsList');
         
         if (found) {
+            currentVerifiedVault = found;
+            
             const totalValue = calculateRegistrationValue(found.items);
             balanceAmountSpan.textContent = `R ${totalValue.toFixed(2)}`;
             
@@ -547,60 +588,77 @@
             itemsHtml += `<p style="margin-top: 10px; font-size: 12px; color: #666;">Status: ${found.status || "Pre-registered"} | Registered: ${new Date(found.timestamp).toLocaleDateString()}</p>`;
             itemsListDiv.innerHTML = itemsHtml;
             resultContainer.style.display = 'block';
+            
+            // SHOW the Add More Items section
+            document.getElementById('addMoreItemsSection').style.display = 'block';
+            
+            // Display current items directly without extra text
+            displayCurrentItems(found);
+            
+            // Show the confirm button
+            document.getElementById('confirmAddToVaultBtn').style.display = 'block';
+            
+            // Render product grid with Admin items
+            renderAddMoreProductGrid();
+            
         } else {
             showModal("Not Found", "No vault found with the provided phone number and PIN.");
             resultContainer.style.display = 'none';
+            document.getElementById('addMoreItemsSection').style.display = 'none';
+            currentVerifiedVault = null;
         }
+    }
+    
+    // NEW: Display current items in the add more section (clean, no extra text)
+    function displayCurrentItems(vault) {
+        const currentItemsDiv = document.getElementById('currentItemsDisplay');
+        if (!currentItemsDiv) return;
+        
+        const items = stringToItems(vault.items);
+        
+        if (items.length === 0) {
+            currentItemsDiv.style.display = 'none';
+            return;
+        }
+        
+        let itemsHtml = `<strong>📦 Current items in your vault:</strong>`;
+        for (let item of items) {
+            const price = productsWithValues[item.name] || 0;
+            itemsHtml += `<p>• ${item.name} x${item.quantity} — R ${(price * item.quantity).toFixed(2)}</p>`;
+        }
+        const totalValue = calculateRegistrationValue(vault.items);
+        itemsHtml += `<p style="margin-top: 10px;"><strong>Total Value: R ${totalValue.toFixed(2)}</strong></p>`;
+        
+        currentItemsDiv.innerHTML = itemsHtml;
+        currentItemsDiv.style.display = 'block';
     }
 
     function clearVaultResult() {
         document.getElementById('vaultBalanceResult').style.display = 'none';
         document.getElementById('vaultPhone').value = '';
         document.getElementById('vaultPin').value = '';
-    }
-
-    // SECTION 4: Add more items to vault
-    function accessAddMoreVault() {
-        const phone = document.getElementById('addMorePhone').value.trim();
-        const pin = document.getElementById('addMorePin').value.trim();
-        
-        if (!phone) { showModal("Missing Info", "Please enter your phone number."); return; }
-        if (!pin) { showModal("Missing Info", "Please enter your PIN."); return; }
-        if (pin.length < 4 || pin.length > 6 || !/^\d+$/.test(pin)) { showModal("Invalid PIN", "PIN must be 4-6 digits."); return; }
-        
-        const preRegistrations = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
-        const found = preRegistrations.find(reg => reg.phone === phone && reg.pin === pin);
-        
-        if (found) {
-            currentAddMoreVault = found;
-            const items = stringToItems(found.items);
-            let itemsHtml = '<p style="font-weight: 600;">📦 Current items in your vault:</p>';
-            for (let item of items) {
-                const price = productsWithValues[item.name] || 0;
-                itemsHtml += `<p>• ${item.name} x${item.quantity} — R ${(price * item.quantity).toFixed(2)}</p>`;
-            }
-            itemsHtml += `<p style="margin-top: 8px;"><strong>Total Value: R ${calculateRegistrationValue(found.items).toFixed(2)}</strong></p>`;
-            document.getElementById('addMoreItemsList').innerHTML = itemsHtml;
-            document.getElementById('addMoreVaultInfo').style.display = 'block';
-            document.getElementById('confirmAddToVaultBtn').style.display = 'block';
-            renderAddMoreProductGrid();
-        } else {
-            showModal("Access Denied", "No vault found with the provided phone number and PIN.");
-            currentAddMoreVault = null;
-            document.getElementById('addMoreVaultInfo').style.display = 'none';
-            document.getElementById('confirmAddToVaultBtn').style.display = 'none';
-        }
+        document.getElementById('addMoreItemsSection').style.display = 'none';
+        currentVerifiedVault = null;
+        addMoreSelectedItems = [];
+        updateAddMoreSelectedDisplay();
     }
 
     function renderAddMoreProductGrid() {
         const grid = document.getElementById('addMoreProductGrid');
+        if (!grid) return;
         grid.innerHTML = '';
+        
         for (let product of Object.keys(productsWithValues)) {
+            const price = productsWithValues[product];
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.style.cssText = 'background:#fafafa;border-radius:24px;padding:12px;text-align:center;border:1px solid #eee;cursor:pointer;';
-            card.innerHTML = `<div style="font-weight:600;margin-bottom:10px;">${escapeHtml(product)}</div><button style="background:#4caf50;border:none;padding:8px 16px;border-radius:40px;color:white;cursor:pointer;width:100%;" onclick="addToAddMoreSelection('${escapeHtml(product)}')">➕ Add</button>`;
+            card.style.cssText = 'background:#fafafa;border-radius:24px;padding:12px;text-align:center;border:1px solid #eee;cursor:pointer;transition:transform 0.2s;';
+            card.innerHTML = `<div style="font-weight:600;margin-bottom:10px;">${escapeHtml(product)}<br><small style="color:#4caf50;">R${price.toFixed(2)}</small></div><button style="background:#4caf50;border:none;padding:8px 16px;border-radius:40px;color:white;cursor:pointer;width:100%;" onclick="addToAddMoreSelection('${escapeHtml(product).replace(/'/g, "\\'")}')">➕ Add</button>`;
             grid.appendChild(card);
+        }
+        
+        if (Object.keys(productsWithValues).length === 0) {
+            grid.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;">No products available. Please ask staff to add items.</p>';
         }
     }
 
@@ -625,8 +683,9 @@
         if (addMoreSelectedItems.length === 0) { container.innerHTML = '<p style="color: #999; text-align: center;">No items selected yet</p>'; return; }
         let html = '';
         addMoreSelectedItems.forEach((item, idx) => {
+            const price = productsWithValues[item.name] || 0;
             html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid #ddd;background:white;margin-bottom:5px;border-radius:40px;">
-                        <span style="font-weight:600;flex:2;">${escapeHtml(item.name)}</span>
+                        <span style="font-weight:600;flex:2;">${escapeHtml(item.name)}<br><small style="color:#666;">R${price.toFixed(2)} each</small></span>
                         <div style="display:flex;gap:5px;align-items:center;flex:1;">
                             <button style="background:#b71c1c;color:white;border:none;width:30px;height:30px;border-radius:30px;cursor:pointer;" onclick="decreaseAddMoreQty(${idx})">−</button>
                             <span style="font-weight:bold;min-width:30px;text-align:center;">${item.quantity}</span>
@@ -639,10 +698,10 @@
     }
 
     function confirmAddToVault() {
-        if (!currentAddMoreVault) { showModal("No Vault", "Please access your vault first."); return; }
+        if (!currentVerifiedVault) { showModal("No Vault", "Please check your balance first."); return; }
         if (addMoreSelectedItems.length === 0) { showModal("No Items", "Please select items to add."); return; }
         
-        const existingItems = stringToItems(currentAddMoreVault.items);
+        const existingItems = stringToItems(currentVerifiedVault.items);
         for (let newItem of addMoreSelectedItems) {
             const existing = existingItems.find(i => i.name === newItem.name);
             if (existing) existing.quantity += newItem.quantity;
@@ -653,22 +712,31 @@
         const totalValue = calculateRegistrationValue(updatedItemsString);
         
         const allRegs = JSON.parse(localStorage.getItem('randsPreRegistered') || '[]');
-        const index = allRegs.findIndex(reg => reg.id === currentAddMoreVault.id);
+        const index = allRegs.findIndex(reg => reg.id === currentVerifiedVault.id);
         if (index !== -1) {
             allRegs[index].items = updatedItemsString;
             allRegs[index].timestamp = new Date().toISOString();
             localStorage.setItem('randsPreRegistered', JSON.stringify(allRegs));
-            currentAddMoreVault = allRegs[index];
+            currentVerifiedVault = allRegs[index];
             
-            // Update display
-            const items = stringToItems(updatedItemsString);
-            let itemsHtml = '<p style="font-weight: 600;">📦 Updated items in your vault:</p>';
-            for (let item of items) {
+            // Update the current items display
+            displayCurrentItems(currentVerifiedVault);
+            
+            // Update the balance section
+            const balanceAmountSpan = document.getElementById('vaultBalanceAmount');
+            if (balanceAmountSpan) {
+                balanceAmountSpan.textContent = `R ${totalValue.toFixed(2)}`;
+            }
+            
+            // Update the items list in balance section
+            const itemsListDiv = document.getElementById('vaultItemsList');
+            let itemsHtml = `<p style="font-weight: 600; margin-bottom: 8px;">📦 Your stored items:</p>`;
+            for (let item of existingItems) {
                 const price = productsWithValues[item.name] || 0;
                 itemsHtml += `<p>• ${item.name} x${item.quantity} — R ${(price * item.quantity).toFixed(2)}</p>`;
             }
-            itemsHtml += `<p style="margin-top: 8px;"><strong>Total Value: R ${totalValue.toFixed(2)}</strong></p>`;
-            document.getElementById('addMoreItemsList').innerHTML = itemsHtml;
+            itemsHtml += `<p style="margin-top: 10px; font-size: 12px; color: #666;">Status: ${currentVerifiedVault.status || "Pre-registered"} | Updated: ${new Date().toLocaleDateString()}</p>`;
+            itemsListDiv.innerHTML = itemsHtml;
             
             addMoreSelectedItems = [];
             updateAddMoreSelectedDisplay();
@@ -684,7 +752,6 @@
     window.closeMyBoozeVault = closeMyBoozeVault;
     window.checkVaultBalance = checkVaultBalance;
     window.clearVaultResult = clearVaultResult;
-    window.accessAddMoreVault = accessAddMoreVault;
     window.confirmAddToVault = confirmAddToVault;
     window.addToAddMoreSelection = addToAddMoreSelection;
     window.increaseAddMoreQty = increaseAddMoreQty;
@@ -693,10 +760,18 @@
     window.showModal = showModal;
     window.closeModal = closeModal;
 
+    loadProductsFromAdminInventory();
+
+    setInterval(() => {
+        loadProductsFromAdminInventory();
+        if (document.getElementById('myBoozeVaultContainer').style.display === 'block' && currentVerifiedVault) {
+            renderAddMoreProductGrid();
+        }
+    }, 3000);
+
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('checkVaultBalanceBtn')?.addEventListener('click', checkVaultBalance);
         document.getElementById('clearVaultResultBtn')?.addEventListener('click', clearVaultResult);
-        document.getElementById('accessAddMoreVaultBtn')?.addEventListener('click', accessAddMoreVault);
         document.getElementById('confirmAddToVaultBtn')?.addEventListener('click', confirmAddToVault);
         renderAddMoreProductGrid();
         updateAddMoreSelectedDisplay();
